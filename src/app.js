@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 // Rutas
-app.use('/api/productos', productosRoutes);
-app.use('/api/usuarios', usuariosRoutes);
+app.use('/productos', productosRoutes);
+app.use('/usuarios', usuariosRoutes);
 
 module.exports = app;
