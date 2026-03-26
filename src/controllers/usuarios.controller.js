@@ -1,4 +1,5 @@
-const usuarios = require("../data/usuarios.data.js");
+const usuarios = require("../data/usuarios.data.json");
+const path = require('path');
 
 // Endpoint "Obtener todos los Usuarios"
 const obtenerUsuarios = (req, res) => {
@@ -17,6 +18,15 @@ const obtenerUsuarioPorId = (req, res) => {
     res.json(usuario);
 };
 
+function guardarUsuarios(usuarios) {
+    try {
+        const fs = require('fs');
+        fs.writeFileSync(path.join(__dirname, '../data/usuarios.data.json'), JSON.stringify(usuarios, null, 2))
+    } catch (error) {
+        console.error('Error al guardar usuarios: ', error)
+    }
+}
+
 // Endpoint "Crear Usuario"
 const crearUsuario = (req, res) => {
     const {nombre, apellido} = req.body;
@@ -31,6 +41,7 @@ const crearUsuario = (req, res) => {
     }
 
     usuarios.push(nuevoUsuario);
+    guardarUsuarios(usuarios);
     res.status(201).json(nuevoUsuario);
 };
 
@@ -51,6 +62,7 @@ const actualizarUsuario = (req, res) => {
     usuario.nombre = nombre;
     usuario.apellido = apellido;
 
+    guardarUsuarios(usuarios);
     res.json(usuario);
 }
 
@@ -64,6 +76,7 @@ const eliminarUsuario = (req, res) => {
     }
 
     usuarios.splice(index, 1);
+    guardarUsuarios(usuarios);
     res.json(usuarios);
 }
 

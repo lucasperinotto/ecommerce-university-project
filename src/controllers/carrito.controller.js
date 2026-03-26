@@ -1,4 +1,10 @@
-const carritos = require('../data/carritos.data.js');
+const carritos = require('../data/carritos.data.json');
+const path = require('path');
+
+// Endpoint "Obtener un Carritos"
+const obtenerCarritos = (req, res) => {
+    res.json(carritos);
+};
 
 // Endpoint "Obtener un Carrito por ID de Usuario"
 const obtenerCarritoPorId = (req, res) => {
@@ -15,7 +21,7 @@ const obtenerCarritoPorId = (req, res) => {
 function guardarCarritos(carritos) {
     try {
         const fs = require('fs');
-        fs.writeFileSync(carritos_json, JSON.stringify(carritos, null, 2))
+        fs.writeFileSync(path.join(__dirname, '../data/carritos.data.json'), JSON.stringify(carritos, null, 2))
     } catch (error) {
         console.error('Error al guardar carritos: ', error)
     }
@@ -40,7 +46,7 @@ const idCliente = parseInt(req.params.id);
 // Endpoint "Agregar Producto a un Carrito"
 const agregarProductoAlCarrito = (req, res) => {
     const id = parseInt(req.params.id);
-    const carrito = carritos.find(c => c.id == id);
+    const carrito = carritos.find(c => c.id === id);
     if (!carrito) {
         return res.status(404).json({ error: 'Carrito no encontrado.'});
     }
@@ -62,6 +68,7 @@ const agregarProductoAlCarrito = (req, res) => {
 };  
 
 module.exports = {
+    obtenerCarritos,
     obtenerCarritoPorId,
     crearCarrito,
     agregarProductoAlCarrito

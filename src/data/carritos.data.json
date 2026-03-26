@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "productos": [
+      {
+        "idProductoCarrito": 1,
+        "nombre": "Teclado",
+        "precio": "7500"
+      },
+      {
+        "idProductoCarrito": 2,
+        "nombre": "Mouse Pad",
+        "precio": "4800"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "productos": [
+      {
+        "idProductoCarrito": 1,
+        "nombre": "Mouse",
+        "precio": "5000"
+      }
+    ]
+  }
+]

@@ -1,4 +1,5 @@
-const productos = require('../data/productos.data.js');
+const productos = require('../data/productos.data.json');
+const path = require('path');
 
 // Endpoint "Obtener Producto"
 const obtenerProductos = (req, res) => {
@@ -17,6 +18,15 @@ const obtenerProductoPorId = (req, res) => {
     res.json(producto);
 };
 
+function guardarProductos(productos) {
+    try {
+        const fs = require('fs');
+        fs.writeFileSync(path.join(__dirname, '../data/productos.data.json'), JSON.stringify(productos, null, 2))
+    } catch (error) {
+        console.error('Error al guardar productos: ', error)
+    }
+}
+
 // Endpoint "Crear Producto"
 const crearProducto = (req, res) => {
     const {nombre, precio} = req.body;
@@ -31,6 +41,7 @@ const crearProducto = (req, res) => {
     }
 
     productos.push(nuevoProducto);
+    guardarProductos(productos);
     res.status(201).json(nuevoProducto);
 };
 
@@ -51,6 +62,7 @@ const actualizarProducto = (req, res) => {
     producto.nombre = nombre;
     producto.precio = precio;
 
+    guardarProductos(productos);
     res.json(producto);
 }
 
@@ -64,6 +76,7 @@ const eliminarProducto = (req, res) => {
     }
 
     productos.splice(index, 1);
+    guardarProductos(productos);
     res.json(productos);
 }
 
