@@ -1,4 +1,4 @@
-const carritos = require('../data/carritos.data.json');
+const carritos = require('../data/carritos.data.js');
 
 // Endpoint "Obtener un Carrito por ID de Usuario"
 const obtenerCarritoPorId = (req, res) => {
@@ -23,8 +23,12 @@ function guardarCarritos(carritos) {
 
 // Endpoint "Crear Carrito"
 const crearCarrito = (req, res) => {
+const idCliente = parseInt(req.params.id);
+
+    // verificacion de si el carrito ya existe
+
     const nuevoCarrito = {
-        id: carrito.length + 1,
+        id: idCliente,
         productos: []
     }
 
@@ -35,8 +39,27 @@ const crearCarrito = (req, res) => {
 
 // Endpoint "Agregar Producto a un Carrito"
 const agregarProductoAlCarrito = (req, res) => {
-    
-};
+    const id = parseInt(req.params.id);
+    const carrito = carritos.find(c => c.id == id);
+    if (!carrito) {
+        return res.status(404).json({ error: 'Carrito no encontrado.'});
+    }
+
+    const {nombre, precio} = req.body;
+    if (!nombre || !precio) {
+        return res.status(400).json({ error: 'Faltan campos requeridos.' });
+    }
+
+    const productoAgregado = {
+        idProductoCarrito: carrito.productos.length + 1,
+        nombre,
+        precio
+    }
+
+    carrito.productos.push(productoAgregado);
+    guardarCarritos(carritos);
+    res.status(201).json(productoAgregado);
+};  
 
 module.exports = {
     obtenerCarritoPorId,
