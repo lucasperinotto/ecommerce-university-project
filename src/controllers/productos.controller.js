@@ -29,15 +29,17 @@ function guardarProductos(productos) {
 
 // Endpoint "Crear Producto"
 const crearProducto = (req, res) => {
-    const {nombre, precio} = req.body;
-    if (!nombre || !precio) {
+    const {nombre, precio, cantidad} = req.body;
+    if (!nombre || !precio || !cantidad) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
     const nuevoProducto = {
         id: productos.length + 1,
         nombre,
-        precio
+        precio,
+        cantidad,
+        estado: "disponible"
     }
 
     productos.push(nuevoProducto);
@@ -54,20 +56,29 @@ const actualizarProducto = (req, res) => {
         return res.status(404).json({ error: 'Producto no encontrado.'});
     }
 
-    const {nombre, precio} = req.body;
-    if (!nombre || !precio) {
+    const {nombre, precio, cantidad} = req.body;
+    if (!nombre || !precio || !cantidad) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
+    }
+
+    if (precio <= 0) {
+        return res.status(400).json({ error: 'Ingrese un monto válido.' });
+    }
+
+    if (cantidad <= 0) {
+        return res.status(400).json({ error: 'Ingrese una cantidad válida.' });
     }
 
     producto.nombre = nombre;
     producto.precio = precio;
+    producto.cantidad = cantidad;
 
     guardarProductos(productos);
     res.json(producto);
 }
 
-// Endpoint "Eliminar Producto"
-const eliminarProducto = (req, res) => {
+// Endpoint "Baja Logica de Producto"
+const bajaLogicaProducto = (req, res) => {
     const id = req.params.id;
     const index = productos.findIndex(p => p.id == id);
 
@@ -75,7 +86,9 @@ const eliminarProducto = (req, res) => {
         return res.status(404).json({ error: 'Producto no encontrado.'});
     }
 
-    productos.splice(index, 1);
+    productos[index].estado = "no disponible";
+    productos[index].cantidad = 0;
+
     guardarProductos(productos);
     res.json(productos);
 }
@@ -85,5 +98,5 @@ module.exports = {
     obtenerProductoPorId,
     crearProducto,
     actualizarProducto,
-    eliminarProducto
+    bajaLogicaProducto
 }

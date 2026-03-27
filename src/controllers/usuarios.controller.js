@@ -29,15 +29,29 @@ function guardarUsuarios(usuarios) {
 
 // Endpoint "Crear Usuario"
 const crearUsuario = (req, res) => {
-    const {nombre, apellido} = req.body;
-    if (!nombre || !apellido) {
+    const {nombre, apellido, mail, contrasena} = req.body;
+    if (!nombre || !apellido || !mail || !contrasena) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
     const nuevoUsuario = {
         id: usuarios.length + 1,
         nombre,
-        apellido
+        apellido,
+        mail,
+        contrasena,
+        direcciones: [
+            {
+                idDireccion: direcciones.length + 1,
+                calle,
+                numero,
+                ciudad,
+                provincia,
+                codigoPostal
+            }
+        ],
+        rol: "cliente",
+        estado: "activo"
     }
 
     usuarios.push(nuevoUsuario);
@@ -66,8 +80,8 @@ const actualizarUsuario = (req, res) => {
     res.json(usuario);
 }
 
-// Endpoint "Eliminar Usuario"
-const eliminarUsuario = (req, res) => {
+// Endpoint "Baja Logica de Usuario"
+const bajaLogicaUsuario = (req, res) => {
     const id = req.params.id;
     const index = usuarios.findIndex(p => p.id == id);
 
@@ -75,7 +89,7 @@ const eliminarUsuario = (req, res) => {
         return res.status(404).json({ error: 'Usuario no encontrado.'});
     }
 
-    usuarios.splice(index, 1);
+    usuarios[index].estado = "inactivo";
     guardarUsuarios(usuarios);
     res.json(usuarios);
 }
@@ -85,5 +99,5 @@ module.exports = {
     obtenerUsuarioPorId,
     crearUsuario,
     actualizarUsuario,
-    eliminarUsuario
+    bajaLogicaUsuario
 }

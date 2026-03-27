@@ -29,13 +29,16 @@ function guardarCarritos(carritos) {
 
 // Endpoint "Crear Carrito"
 const crearCarrito = (req, res) => {
-const idCliente = parseInt(req.params.id);
+    const idCliente = parseInt(req.params.id);
 
-    // verificacion de si el carrito ya existe
+    const carritoExistente = carritos.find(c => c.id === idCliente);
+    if (carritoExistente) {
+        return res.status(400).json({ error: 'Este usuario ya tiene un carrito.'});
+    }
 
     const nuevoCarrito = {
         id: idCliente,
-        productos: []
+        items: []
     }
 
     carritos.push(nuevoCarrito);
@@ -51,20 +54,30 @@ const agregarProductoAlCarrito = (req, res) => {
         return res.status(404).json({ error: 'Carrito no encontrado.'});
     }
 
-    const {nombre, precio} = req.body;
-    if (!nombre || !precio) {
+    const {idProducto, nombre, precio, cantidad} = req.body;
+    if (!idProducto || !nombre || !precio || !cantidad) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
-    const productoAgregado = {
-        idProductoCarrito: carrito.productos.length + 1,
-        nombre,
-        precio
-    }
+    let productoFinal;
+    const productoExistente = carrito.items.find(item => item.idProducto === idProducto);
+    if (productoExistente) {
+        productoExistente.cantidad += cantidad;
+        productoFinal = productoExistente;
+    } else {
+            const productoAgregado = {
+            idProductoCarrito: carrito.items.length + 1,
+            idProducto,
+            nombre,
+            precio,
+            cantidad
+            } 
+            carrito.items.push(productoAgregado);
+            productoFinal = productoAgregado;
+        }
 
-    carrito.productos.push(productoAgregado);
     guardarCarritos(carritos);
-    res.status(201).json(productoAgregado);
+    res.status(201).json(productoFinal);
 };  
 
 module.exports = {

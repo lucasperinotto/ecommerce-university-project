@@ -6,13 +6,13 @@ const {
     obtenerProductoPorId,
     crearProducto,
     actualizarProducto,
-    eliminarProducto
+    bajaLogicaProducto
 } = require('../controllers/productos.controller');
 
 router.get('/', obtenerProductos);
 router.get('/:id', obtenerProductoPorId);
 router.post('/', crearProducto);
 router.put('/:id', actualizarProducto);
-router.delete('/:id', eliminarProducto);
+router.delete('/:id', bajaLogicaProducto);
 
 module.exports = router;
