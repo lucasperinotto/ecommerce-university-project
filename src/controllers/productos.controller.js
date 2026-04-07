@@ -1,6 +1,13 @@
 const productos = require('../data/productos.data.json');
 const path = require('path');
 
+const Categoria = {
+  ANILLOS: "ANILLOS",
+  AROS: "AROS",
+  CARTERAS: "CARTERAS",
+  COLLARES: "COLLARES"
+};
+
 // Endpoint "Obtener Producto"
 const obtenerProductos = (req, res) => {
     res.json(productos);
@@ -29,9 +36,21 @@ function guardarProductos(productos) {
 
 // Endpoint "Crear Producto"
 const crearProducto = (req, res) => {
-    const {nombre, precio, cantidad} = req.body;
-    if (!nombre || !precio || !cantidad) {
+    const {nombre, precio, cantidad, categoria, descripcion} = req.body;
+    if (!nombre || !precio || !cantidad || !categoria || !descripcion) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
+    }
+
+    if (precio <= 0) {
+        return res.status(400).json({ error: 'Ingrese un monto válido.' });
+    }
+
+    if (cantidad <= 0) {
+        return res.status(400).json({ error: 'Ingrese una cantidad válida.' });
+    }
+
+    if(!Object.values(Categoria).includes(categoria)) {
+        return res.status(400).json({ error: 'La categoría ingresada no se encuentra dentro de las válidas (ANILLOS, AROS, CARTERAS, COLLARES).' });
     }
 
     const nuevoProducto = {
@@ -39,6 +58,8 @@ const crearProducto = (req, res) => {
         nombre,
         precio,
         cantidad,
+        categoria,
+        descripcion,
         estado: "disponible"
     }
 
@@ -56,8 +77,8 @@ const actualizarProducto = (req, res) => {
         return res.status(404).json({ error: 'Producto no encontrado.'});
     }
 
-    const {nombre, precio, cantidad} = req.body;
-    if (!nombre || !precio || !cantidad) {
+    const {nombre, precio, cantidad, categoria, descripcion} = req.body;
+    if (!nombre || !precio || !cantidad || !categoria || !descripcion) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
@@ -69,9 +90,15 @@ const actualizarProducto = (req, res) => {
         return res.status(400).json({ error: 'Ingrese una cantidad válida.' });
     }
 
+    if(!Object.values(Categoria).includes(categoria)) {
+        return res.status(400).json({ error: 'La categoría ingresada no se encuentra dentro de las válidas (ANILLOS, AROS, CARTERAS, COLLARES).' });
+    }
+
     producto.nombre = nombre;
     producto.precio = precio;
     producto.cantidad = cantidad;
+    producto.categoria = categoria;
+    producto.descripcion = descripcion;
 
     guardarProductos(productos);
     res.json(producto);
