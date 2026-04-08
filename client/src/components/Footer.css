@@ -1,0 +1,19 @@
+.footer {
+  background-color: var(--blanco);
+  border-top: 1px solid var(--gris-claro);
+  text-align: center;
+  padding: 24px 48px;
+  margin-top: auto;
+}
+
+.footer-brand {
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--gris-oscuro);
+  margin-bottom: 4px;
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--gris-medio);
+}

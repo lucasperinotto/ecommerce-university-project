@@ -1,0 +1,145 @@
+.detalle {
+  flex: 1;
+  padding: 48px;
+}
+
+.detalle-volver {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: var(--gris-medio);
+  margin-bottom: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.detalle-volver:hover {
+  color: var(--gris-oscuro);
+}
+
+.detalle-contenido {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.detalle-imagen-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  height: 420px;
+}
+
+.detalle-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detalle-imagen-placeholder {
+  background-color: var(--verde);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detalle-imagen-placeholder span {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blanco);
+  font-style: italic;
+}
+
+.detalle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detalle-categoria {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gris-medio);
+}
+
+.detalle-nombre {
+  font-size: 2rem;
+  font-style: italic;
+  font-weight: normal;
+  color: var(--gris-oscuro);
+  line-height: 1.2;
+}
+
+.detalle-precio {
+  font-size: 1.6rem;
+  color: var(--gris-oscuro);
+  font-weight: bold;
+}
+
+.detalle-descripcion {
+  font-size: 0.95rem;
+  color: var(--gris-medio);
+  line-height: 1.7;
+  border-top: 1px solid var(--gris-claro);
+  padding-top: 16px;
+}
+
+.detalle-stock {
+  font-size: 0.85rem;
+  color: var(--gris-medio);
+}
+
+.detalle-btn {
+  margin-top: 8px;
+  background-color: var(--verde);
+  color: var(--blanco);
+  border: none;
+  padding: 16px 32px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.detalle-btn:hover:not(:disabled) {
+  background-color: #8CC98E;
+}
+
+.detalle-btn:disabled {
+  background-color: var(--gris-claro);
+  color: var(--gris-medio);
+  cursor: not-allowed;
+}
+
+.detalle-estado {
+  text-align: center;
+  padding: 80px 48px;
+  color: var(--gris-medio);
+}
+
+.detalle-error {
+  color: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .detalle {
+    padding: 32px 24px;
+  }
+
+  .detalle-contenido {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .detalle-imagen-wrap {
+    height: 260px;
+  }
+}
