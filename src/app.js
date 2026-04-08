@@ -1,3 +1,5 @@
+import connectDB from "./config/db.js";
+
 const express = require('express');
 const productosRoutes = require('./routes/productos.routes');
 const ordenesRoutes = require('./routes/ordenes.routes');
@@ -5,8 +7,8 @@ const usuariosRoutes = require('./routes/usuarios.routes');
 const carritosRoutes = require('./routes/carrito.routes');
 
 const app = express();
-
 app.use(express.json());
+connectDB();
 
 // Rutas
 app.use('/ordenes', ordenesRoutes);

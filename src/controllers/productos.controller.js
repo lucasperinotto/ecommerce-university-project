@@ -2,10 +2,10 @@ const productos = require('../data/productos.data.json');
 const path = require('path');
 
 const Categoria = {
-  ANILLOS: "ANILLOS",
-  AROS: "AROS",
-  CARTERAS: "CARTERAS",
-  COLLARES: "COLLARES"
+  ANILLOS: "anillos",
+  AROS: "aros",
+  CARTERAS: "carteras",
+  COLLARES: "collares"
 };
 
 // Endpoint "Obtener Producto"
