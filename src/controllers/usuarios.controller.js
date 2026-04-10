@@ -1,41 +1,45 @@
-const usuarios = require("../data/usuarios.data.json");
-const path = require('path');
+const Usuario = require('../models/Usuario');
 
 // Endpoint "Obtener todos los Usuarios"
-const obtenerUsuarios = (req, res) => {
-    res.json(usuarios);
+const obtenerUsuarios = async (req, res) => {
+    try {
+        const usuarios = await Usuario.find().select("-__v");
+        res.json(usuarios);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los usuarios.' });
+    }
 };
 
 // Endpoint "Obtener un Usuario por ID"
-const obtenerUsuarioPorId = (req, res) => {
-    const id = parseInt(req.params.id);
-    const usuario = usuarios.find(p => p.id == id);
-
-    if (!usuario) {
-        return res.status(404).json({ error: 'Usuario no encontrado.'});
+const obtenerUsuarioPorId = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.'});
+        }
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el usuario.' });
     }
-
-    res.json(usuario);
 };
 
-function guardarUsuarios(usuarios) {
-    try {
-        const fs = require('fs');
-        fs.writeFileSync(path.join(__dirname, '../data/usuarios.data.json'), JSON.stringify(usuarios, null, 2))
-    } catch (error) {
-        console.error('Error al guardar usuarios: ', error)
-    }
-}
-
 // Endpoint "Crear Usuario"
-const crearUsuario = (req, res) => {
+const crearUsuario = async (req, res) => {
     const {nombre, apellido, mail, contrasena} = req.body;
     if (!nombre || !apellido || !mail || !contrasena) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
-    const nuevoUsuario = {
-        id: usuarios.length + 1,
+    if (mail.length < 10 || !mail.includes('@')) {
+        return res.status(400).json({ error: 'Ingrese un mail válido.' });
+    }
+
+    if (contrasena.length < 6) {
+        return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
+    }
+
+    try {
+        const nuevoUsuario = new Usuario({
         nombre,
         apellido,
         mail,
@@ -52,46 +56,51 @@ const crearUsuario = (req, res) => {
         ],
         rol: "cliente",
         estado: "activo"
+    });
+        await nuevoUsuario.save();
+        res.status(201).json(nuevoUsuario);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al crear el usuario.' });
     }
-
-    usuarios.push(nuevoUsuario);
-    guardarUsuarios(usuarios);
-    res.status(201).json(nuevoUsuario);
 };
 
 // Endpoint "Actualizar Usuario"
-const actualizarUsuario = (req, res) => {
-    const id = req.params.id;
-    const usuario = usuarios.find(p => p.id == id);
+const actualizarUsuario = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.'});
+        }
 
-    if (!usuario) {
-        return res.status(404).json({ error: 'Usuario no encontrado.'});
+        const {nombre, apellido} = req.body;
+        if (!nombre || !apellido) {
+            return res.status(400).json({ error: 'Faltan campos requeridos.' });
+        }
+
+        usuario.nombre = nombre;
+        usuario.apellido = apellido;
+
+        await usuario.save();
+        res.json(usuario);
+        } catch (error) {
+        res.status(500).json({ error: 'Error al actualizar el usuario.' });
     }
-
-    const {nombre, apellido} = req.body;
-    if (!nombre || !apellido) {
-        return res.status(400).json({ error: 'Faltan campos requeridos.' });
-    }
-
-    usuario.nombre = nombre;
-    usuario.apellido = apellido;
-
-    guardarUsuarios(usuarios);
-    res.json(usuario);
 }
 
 // Endpoint "Baja Logica de Usuario"
-const bajaLogicaUsuario = (req, res) => {
-    const id = req.params.id;
-    const index = usuarios.findIndex(p => p.id == id);
+const bajaLogicaUsuario = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.'});
+        }
 
-    if (index === -1) {
-        return res.status(404).json({ error: 'Usuario no encontrado.'});
+        usuario.estado = "inactivo";
+        await usuario.save();
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al dar de baja al usuario.' });
     }
-
-    usuarios[index].estado = "inactivo";
-    guardarUsuarios(usuarios);
-    res.json(usuarios);
 }
 
 module.exports = {
