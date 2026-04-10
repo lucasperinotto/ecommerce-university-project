@@ -1,55 +1,50 @@
-const carritos = require('../data/carritos.data.json');
-const path = require('path');
+const Carrito = require('../models/Carrito');
 
-// Endpoint "Obtener un Carritos"
-const obtenerCarritos = (req, res) => {
-    res.json(carritos);
+// Endpoint "Obtener Carritos"
+const obtenerCarritos = async (req, res) => {
+    try {
+        const carritos = await Carrito.find().select("-__v");
+        res.json(carritos);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los carritos.' });
+    }
 };
 
 // Endpoint "Obtener un Carrito por ID de Usuario"
-const obtenerCarritoPorId = (req, res) => {
-    const id = parseInt(req.params.id);
-    const carrito = carritos.find(c => c.id == id);
-
-    if (!carrito) {
-        return res.status(404).json({ error: 'Carrito no encontrado.'});
+const obtenerCarritoPorId = async (req, res) => {
+    try {
+        const carrito = await Carrito.findOne({ idUsuario: req.params.id }).select("-__v");
+        if (!carrito) {
+            return res.status(404).json({ message: 'Carrito no encontrado' });
+        }
+        res.json(carrito);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el carrito.' });
     }
-
-    res.json(carrito);
 };
 
-function guardarCarritos(carritos) {
-    try {
-        const fs = require('fs');
-        fs.writeFileSync(path.join(__dirname, '../data/carritos.data.json'), JSON.stringify(carritos, null, 2))
-    } catch (error) {
-        console.error('Error al guardar carritos: ', error)
-    }
-}
-
 // Endpoint "Crear Carrito"
-const crearCarrito = (req, res) => {
-    const idCliente = parseInt(req.params.id);
-
-    const carritoExistente = carritos.find(c => c.id === idCliente);
+const crearCarrito = async (req, res) => {
+    const carritoExistente = await Carrito.findOne({ idUsuario: req.params.id});
     if (carritoExistente) {
         return res.status(400).json({ error: 'Este usuario ya tiene un carrito.'});
     }
 
-    const nuevoCarrito = {
-        id: idCliente,
-        items: []
+    try {
+        const nuevoCarrito = new Carrito({
+            idUsuario: req.params.id,
+            items: []
+        });
+        await nuevoCarrito.save();
+        res.status(201).json(nuevoCarrito);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al crear el carrito.' });
     }
-
-    carritos.push(nuevoCarrito);
-    guardarCarritos(carritos);
-    res.status(201).json(nuevoCarrito);
-}
+};
 
 // Endpoint "Agregar Producto a un Carrito"
-const agregarProductoAlCarrito = (req, res) => {
-    const id = parseInt(req.params.id);
-    const carrito = carritos.find(c => c.id === id);
+const agregarProductoAlCarrito = async (req, res) => {
+    const carrito = await Carrito.findOne({ idUsuario: req.params.id });
     if (!carrito) {
         return res.status(404).json({ error: 'Carrito no encontrado.'});
     }
@@ -65,20 +60,18 @@ const agregarProductoAlCarrito = (req, res) => {
         productoExistente.cantidad += cantidad;
         productoFinal = productoExistente;
     } else {
-            const productoAgregado = {
-            idProductoCarrito: carrito.items.length + 1,
-            idProducto,
-            nombre,
-            precio,
-            cantidad
-            } 
-            carrito.items.push(productoAgregado);
-            productoFinal = productoAgregado;
-        }
+        const productoAgregado = {
+            idProducto: idProducto,
+            nombre: nombre,
+            precio: precio,
+            cantidad: cantidad
+        };
+        productoFinal = productoAgregado;
+    }
 
-    guardarCarritos(carritos);
+    await carrito.save();
     res.status(201).json(productoFinal);
-};  
+};
 
 module.exports = {
     obtenerCarritos,

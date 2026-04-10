@@ -1,4 +1,4 @@
-import connectDB from "./config/db.js";
+const connectDB = require("./db.js");
 
 const express = require('express');
 const productosRoutes = require('./routes/productos.routes');
