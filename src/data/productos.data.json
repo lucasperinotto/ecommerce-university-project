@@ -118,8 +118,8 @@
     "cantidad": 10,
     "categoria": "CARTERAS",
     "descripcion": "Minibag bordó con correa regulable de ecocuero.",
-    "imagen": "/MINIBAG (1).jpg",
-    "imagenes": ["/MINIBAG (1).jpg", "/MINIBAG (5).jpg"],
+    "imagen": "/MINIBAG (5).jpg",
+    "imagenes": ["/MINIBAG (5).jpg", "/MINIBAG (1).jpg"],
     "estado": "disponible"
   },
   {
@@ -131,6 +131,7 @@
     "descripcion": "Minibag negra con correa regulable de ecocuero.",
     "imagen": "/MINIBAG (3).jpg",
     "imagenes": ["/MINIBAG (3).jpg", "/MINIBAG (4).jpg"],
+    "objectPosition": "center 45%",
     "estado": "disponible"
   },
   {
@@ -141,6 +142,7 @@
     "categoria": "CARTERAS",
     "descripcion": "Minibag negra con correa regulable de ecocuero.",
     "imagen": "/MINIBAG (6).jpeg",
+    "objectPosition": "center 75%",
     "estado": "disponible"
   },
   {
@@ -151,6 +153,7 @@
     "categoria": "CARTERAS",
     "descripcion": "Minibag blanca con correa regulable de ecocuero.",
     "imagen": "/MINIBAG (7).jpeg",
+    "objectPosition": "center 55%",
     "estado": "disponible"
   },
   {

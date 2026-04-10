@@ -32,15 +32,6 @@ function ProductDetailPage() {
 
       <div className="detalle-contenido">
         <div className="detalle-galeria">
-          <div className="detalle-imagen-wrap">
-            {imagenes.length > 0 ? (
-              <img src={imagenes[imagenActiva]} alt={producto.nombre} className="detalle-imagen" />
-            ) : (
-              <div className="detalle-imagen-placeholder">
-                <span>{producto.categoria || 'Accesorio'}</span>
-              </div>
-            )}
-          </div>
           {imagenes.length > 1 && (
             <div className="detalle-thumbnails">
               {imagenes.map((img, i) => (
@@ -54,6 +45,15 @@ function ProductDetailPage() {
               ))}
             </div>
           )}
+          <div className="detalle-imagen-wrap">
+            {imagenes.length > 0 ? (
+              <img src={imagenes[imagenActiva]} alt={producto.nombre} className="detalle-imagen" />
+            ) : (
+              <div className="detalle-imagen-placeholder">
+                <span>{producto.categoria || 'Accesorio'}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="detalle-info">

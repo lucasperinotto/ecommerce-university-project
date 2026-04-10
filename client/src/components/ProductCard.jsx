@@ -5,11 +5,19 @@ function ProductCard({ producto }) {
   const { id, nombre, precio, categoria, estado, imagen } = producto;
   const noDisponible = estado === 'no disponible';
 
+  const getObjectPosition = () => {
+    if (categoria === 'ANILLOS') return 'center 70%';
+    if (id === 13) return 'center 85%';
+    if (id === 16) return 'center 40%';
+    if (id === 17) return 'center 0%';
+    return 'center';
+  };
+
   return (
     <Link to={`/producto/${id}`} className={`product-card ${noDisponible ? 'agotado' : ''}`}>
       <div className="product-card-img-wrap">
         {imagen ? (
-          <img src={imagen} alt={nombre} className="product-card-img" />
+          <img src={imagen} alt={nombre} className="product-card-img" style={{ objectPosition: getObjectPosition() }} />
         ) : (
           <div className="product-card-img-placeholder">
             <span>{categoria || 'Accesorio'}</span>
