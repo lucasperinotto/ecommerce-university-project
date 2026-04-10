@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductoById } from '../services/productosService';
-import { getImagenCategoria } from '../utils/categoriaImagen';
 import './ProductDetailPage.css';
 
 function ProductDetailPage() {
@@ -10,6 +9,7 @@ function ProductDetailPage() {
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [imagenActiva, setImagenActiva] = useState(0);
 
   useEffect(() => {
     getProductoById(id)
@@ -22,7 +22,7 @@ function ProductDetailPage() {
   if (error) return <p className="detalle-estado detalle-error">{error}</p>;
 
   const noDisponible = producto.estado === 'no disponible';
-  const imagen = getImagenCategoria(producto.categoria);
+  const imagenes = producto.imagenes || (producto.imagen ? [producto.imagen] : []);
 
   return (
     <main className="detalle">
@@ -31,12 +31,27 @@ function ProductDetailPage() {
       </button>
 
       <div className="detalle-contenido">
-        <div className="detalle-imagen-wrap">
-          {imagen ? (
-            <img src={imagen} alt={producto.nombre} className="detalle-imagen" />
-          ) : (
-            <div className="detalle-imagen-placeholder">
-              <span>{producto.categoria || 'Accesorio'}</span>
+        <div className="detalle-galeria">
+          <div className="detalle-imagen-wrap">
+            {imagenes.length > 0 ? (
+              <img src={imagenes[imagenActiva]} alt={producto.nombre} className="detalle-imagen" />
+            ) : (
+              <div className="detalle-imagen-placeholder">
+                <span>{producto.categoria || 'Accesorio'}</span>
+              </div>
+            )}
+          </div>
+          {imagenes.length > 1 && (
+            <div className="detalle-thumbnails">
+              {imagenes.map((img, i) => (
+                <button
+                  key={i}
+                  className={`detalle-thumb${i === imagenActiva ? ' activo' : ''}`}
+                  onClick={() => setImagenActiva(i)}
+                >
+                  <img src={img} alt={`${producto.nombre} ${i + 1}`} />
+                </button>
+              ))}
             </div>
           )}
         </div>

@@ -5,7 +5,8 @@ const Categoria = {
   ANILLOS: "ANILLOS",
   AROS: "AROS",
   CARTERAS: "CARTERAS",
-  COLLARES: "COLLARES"
+  COLLARES: "COLLARES",
+  MINIBAGS: "MINIBAGS"
 };
 
 // Endpoint "Obtener Producto"
@@ -50,7 +51,7 @@ const crearProducto = (req, res) => {
     }
 
     if(!Object.values(Categoria).includes(categoria)) {
-        return res.status(400).json({ error: 'La categoría ingresada no se encuentra dentro de las válidas (ANILLOS, AROS, CARTERAS, COLLARES).' });
+        return res.status(400).json({ error: 'La categoría ingresada no se encuentra dentro de las válidas (ANILLOS, AROS, CARTERAS, COLLARES, MINIBAGS).' });
     }
 
     const nuevoProducto = {
@@ -91,7 +92,7 @@ const actualizarProducto = (req, res) => {
     }
 
     if(!Object.values(Categoria).includes(categoria)) {
-        return res.status(400).json({ error: 'La categoría ingresada no se encuentra dentro de las válidas (ANILLOS, AROS, CARTERAS, COLLARES).' });
+        return res.status(400).json({ error: 'La categoría ingresada no se encuentra dentro de las válidas (ANILLOS, AROS, CARTERAS, COLLARES, MINIBAGS).' });
     }
 
     producto.nombre = nombre;

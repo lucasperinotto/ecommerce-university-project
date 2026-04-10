@@ -1,17 +1,176 @@
 [
   {
     "id": 1,
-    "nombre": "Teclado",
-    "precio": 8500
+    "nombre": "Aros con dije de flor beige",
+    "precio": 7100,
+    "cantidad": 10,
+    "categoria": "AROS",
+    "descripcion": "Aros con dije de flor beige de acero blanco, con cierre clic.",
+    "imagen": "/AROS (1).jpg",
+    "estado": "disponible"
   },
   {
     "id": 2,
-    "nombre": "Mouse",
-    "precio": 5000
+    "nombre": "Aros gruesos de acero dorado",
+    "precio": 5500,
+    "cantidad": 10,
+    "categoria": "AROS",
+    "descripcion": "Aros gruesos de acero dorado con cierre clic.",
+    "imagen": "/AROS (2).jpg",
+    "estado": "disponible"
   },
   {
     "id": 3,
-    "nombre": "Mouse Pad",
-    "precio": "4800"
+    "nombre": "Aros con dije de gotita transparente",
+    "precio": 7100,
+    "cantidad": 10,
+    "categoria": "AROS",
+    "descripcion": "Aros con dije de gotita transparente de acero dorado con cierre clic.",
+    "imagen": "/AROS (5).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 4,
+    "nombre": "Collar para compartir - Sol y Luna (acero blanco)",
+    "precio": 14000,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar para compartir con imán. Dije de sol y luna con brillos de acero blanco. Se vende el juego de dos collares.",
+    "imagen": "/COLLAR (1).jpg",
+    "imagenes": ["/COLLAR (1).jpg", "/COLLAR (11).jpg"],
+    "estado": "disponible"
+  },
+  {
+    "id": 5,
+    "nombre": "Collar con dije de sol",
+    "precio": 5500,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar con dije de sol de acero dorado.",
+    "imagen": "/COLLAR (2).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 6,
+    "nombre": "Collar regulable con perlas dorado",
+    "precio": 7900,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar regulable de acero dorado con perlas.",
+    "imagen": "/COLLAR (3).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 7,
+    "nombre": "Collar regulable con perlas quirúrgico",
+    "precio": 7900,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar regulable de acero quirúrgico con perlas.",
+    "imagen": "/COLLAR (4).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 8,
+    "nombre": "Collar con dije de caracol",
+    "precio": 5000,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar de acero quirúrgico con dije de caracol.",
+    "imagen": "/COLLAR (5).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 9,
+    "nombre": "Collar con dije de estrella de mar",
+    "precio": 5000,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar de acero quirúrgico con dije de estrella de mar.",
+    "imagen": "/COLLAR (6).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 10,
+    "nombre": "Collar con dije de caballito de mar",
+    "precio": 5000,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar de acero quirúrgico con dije de caballito de mar.",
+    "imagen": "/COLLAR (7).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 11,
+    "nombre": "Collar para compartir - Sol y Luna (acero dorado)",
+    "precio": 14000,
+    "cantidad": 10,
+    "categoria": "COLLARES",
+    "descripcion": "Collar para compartir con imán. Dije de sol y luna con brillos de acero dorado. Se vende el juego de dos collares.",
+    "imagen": "/COLLAR (8).jpg",
+    "imagenes": ["/COLLAR (8).jpg", "/COLLAR (9).jpg"],
+    "estado": "disponible"
+  },
+  {
+    "id": 12,
+    "nombre": "Minibag bordó con correa regulable",
+    "precio": 26000,
+    "cantidad": 10,
+    "categoria": "CARTERAS",
+    "descripcion": "Minibag bordó con correa regulable de ecocuero.",
+    "imagen": "/MINIBAG (1).jpg",
+    "imagenes": ["/MINIBAG (1).jpg", "/MINIBAG (5).jpg"],
+    "estado": "disponible"
+  },
+  {
+    "id": 13,
+    "nombre": "Minibag negra con correa regulable",
+    "precio": 26000,
+    "cantidad": 10,
+    "categoria": "CARTERAS",
+    "descripcion": "Minibag negra con correa regulable de ecocuero.",
+    "imagen": "/MINIBAG (3).jpg",
+    "imagenes": ["/MINIBAG (3).jpg", "/MINIBAG (4).jpg"],
+    "estado": "disponible"
+  },
+  {
+    "id": 16,
+    "nombre": "Minibag negra con correa regulable",
+    "precio": 26000,
+    "cantidad": 10,
+    "categoria": "CARTERAS",
+    "descripcion": "Minibag negra con correa regulable de ecocuero.",
+    "imagen": "/MINIBAG (6).jpeg",
+    "estado": "disponible"
+  },
+  {
+    "id": 17,
+    "nombre": "Minibag blanca",
+    "precio": 26000,
+    "cantidad": 10,
+    "categoria": "CARTERAS",
+    "descripcion": "Minibag blanca con correa regulable de ecocuero.",
+    "imagen": "/MINIBAG (7).jpeg",
+    "estado": "disponible"
+  },
+  {
+    "id": 14,
+    "nombre": "Anillos de acero dorado",
+    "precio": 4900,
+    "cantidad": 10,
+    "categoria": "ANILLOS",
+    "descripcion": "Anillos de acero dorado. Precio por unidad.",
+    "imagen": "/ANILLOS (1).jpg",
+    "estado": "disponible"
+  },
+  {
+    "id": 15,
+    "nombre": "Anillos de acero dorado perlado",
+    "precio": 5100,
+    "cantidad": 10,
+    "categoria": "ANILLOS",
+    "descripcion": "Anillos de acero dorado perlado. Precio por unidad.",
+    "imagen": "/ANILLOS (2).jpg",
+    "estado": "disponible"
   }
 ]

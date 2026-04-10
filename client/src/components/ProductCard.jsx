@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
-import { getImagenCategoria } from '../utils/categoriaImagen';
 import './ProductCard.css';
 
 function ProductCard({ producto }) {
-  const { id, nombre, precio, categoria, estado } = producto;
+  const { id, nombre, precio, categoria, estado, imagen } = producto;
   const noDisponible = estado === 'no disponible';
-  const imagen = getImagenCategoria(categoria);
 
   return (
     <Link to={`/producto/${id}`} className={`product-card ${noDisponible ? 'agotado' : ''}`}>
