@@ -6,11 +6,13 @@
 
 :root {
   --verde: #A5D6A7;
-  --beige: #F1EDE3;
+  --beige: #F9F7F3;
   --blanco: #FFFFFF;
+  --blanco-calido: #F1EDE3;
   --gris-oscuro: #3A3A3A;
   --gris-medio: #7A7A7A;
   --gris-claro: #E8E4DC;
+  --verde-palido: #EDF4ED;
 }
 
 body {
