@@ -4,7 +4,6 @@
 
 /* Hero */
 .hero {
-  background-color: var(--blanco);
   padding: 64px 48px;
   display: flex;
   align-items: center;
@@ -93,6 +92,7 @@
 
 .categoria-card {
   background-color: var(--blanco);
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
   border: 1px solid var(--gris-claro);
   border-radius: 10px;
   overflow: hidden;
@@ -111,6 +111,7 @@
 .categoria-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background-color: var(--verde-palido);
 }
 
 .categoria-img {
