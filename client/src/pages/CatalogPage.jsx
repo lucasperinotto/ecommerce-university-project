@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { getProductos } from '../services/productosService';
 import ProductCard from '../components/ProductCard';
 import './CatalogPage.css';
+import axios from 'axios';
 
 function CatalogPage() {
   const [productos, setProductos] = useState([]);
@@ -12,10 +13,19 @@ function CatalogPage() {
   const categoriaFiltro = searchParams.get('categoria');
 
   useEffect(() => {
-    getProductos()
-      .then((res) => setProductos(res.data))
-      .catch(() => setError('No se pudieron cargar los productos.'))
-      .finally(() => setCargando(false));
+    const fetchProductos = async () => {
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/productos`);
+        setProductos(response.data);
+    } catch (err) {
+        setError('No se pudieron cargar los productos.');
+        console.error(err);
+    } finally {
+        setCargando(false);
+    };
+  };
+  
+    fetchProductos();
   }, []);
 
   if (cargando) return <p className="catalogo-estado">Cargando productos...</p>;
