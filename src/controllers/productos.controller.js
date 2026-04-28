@@ -32,7 +32,7 @@ const obtenerProductoPorId = async (req, res) => {
 
 // Endpoint "Crear Producto"
 const crearProducto = async (req, res) => {
-    const {nombre, precio, cantidad, categoria, descripcion} = req.body;
+    const {nombre, precio, cantidad, imagen, categoria, descripcion} = req.body;
     if (!nombre || !precio || !cantidad || !categoria || !descripcion) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
@@ -54,6 +54,7 @@ const crearProducto = async (req, res) => {
             nombre,
             precio,
             cantidad,
+            imagen,
             categoria,
             descripcion
         });
@@ -73,8 +74,8 @@ const actualizarProducto = async (req, res) => {
             return res.status(404).json({ error: 'Producto no encontrado.' });
         }
 
-        const {nombre, precio, cantidad, categoria, descripcion} = req.body;
-        if (!nombre || !precio || !cantidad || !categoria || !descripcion) {
+        const {nombre, precio, cantidad, imagen, categoria, descripcion} = req.body;
+        if (!nombre || !precio || !cantidad || !imagen || !categoria || !descripcion) {
             return res.status(400).json({ error: 'Faltan campos requeridos.' });
         }
 
@@ -93,9 +94,9 @@ const actualizarProducto = async (req, res) => {
         producto.nombre = nombre;
         producto.precio = precio;
         producto.cantidad = cantidad;
+        producto.imagen = imagen;
         producto.categoria = categoria;
         producto.descripcion = descripcion;
-        
         await producto.save();
         res.json(producto);
     } catch (error) {

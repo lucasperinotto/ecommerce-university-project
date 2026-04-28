@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductoById } from '../services/productosService';
 import './ProductDetailPage.css';
+import axios from 'axios';
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -12,11 +13,21 @@ function ProductDetailPage() {
   const [imagenActiva, setImagenActiva] = useState(0);
 
   useEffect(() => {
-    getProductoById(id)
-      .then((res) => setProducto(res.data))
-      .catch(() => setError('Producto no encontrado.'))
-      .finally(() => setCargando(false));
-  }, [id]);
+    const fetchProducto = async () => {
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/productos/${id}`);
+        console.log(id);
+        setProducto(response.data);
+    } catch (err) {
+        setError('Producto no encontrado.');
+        console.error(err);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+    fetchProducto();
+}, [id]);
 
   if (cargando) return <p className="detalle-estado">Cargando...</p>;
   if (error) return <p className="detalle-estado detalle-error">{error}</p>;

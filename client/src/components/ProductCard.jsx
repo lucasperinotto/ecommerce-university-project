@@ -14,7 +14,7 @@ function ProductCard({ producto }) {
   };
 
   return (
-    <Link to={`/producto/${id}`} className={`product-card ${noDisponible ? 'agotado' : ''}`}>
+    <Link to={`/producto/${producto._id}`} className={`product-card ${noDisponible ? 'agotado' : ''}`}>
       <div className="product-card-img-wrap">
         {imagen ? (
           <img src={imagen} alt={nombre} className="product-card-img" style={{ objectPosition: getObjectPosition() }} />

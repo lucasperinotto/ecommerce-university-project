@@ -22,7 +22,7 @@ function CatalogPage() {
         console.error(err);
     } finally {
         setCargando(false);
-    };
+    }
   };
   
     fetchProductos();

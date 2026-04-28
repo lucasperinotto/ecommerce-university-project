@@ -5,7 +5,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
-        <img src="/logo.PNG" alt="Sabina Accesorios" className="navbar-logo-img" />
+        <img src="/images/logo.PNG" alt="Sabina Accesorios" className="navbar-logo-img" />
       </Link>
       <ul className="navbar-links">
         <li><Link to="/">Inicio</Link></li>

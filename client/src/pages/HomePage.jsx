@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import './HomePage.css';
 
 const categorias = [
-  { nombre: 'Anillos', categoria: 'ANILLOS', imagen: '/ANILLOS (1).jpg', position: 'center 60%' },
-  { nombre: 'Aros',    categoria: 'AROS',    imagen: '/AROS (1).jpg' },
-  { nombre: 'Collares', categoria: 'COLLARES', imagen: '/COLLAR (2).jpg' },
-  { nombre: 'Carteras', categoria: 'CARTERAS', imagen: '/MINIBAG (6).jpeg', position: 'center 40%' },
+  { nombre: 'Anillos', categoria: 'ANILLOS', imagen: '/images/ANILLOS (1).jpg', position: 'center 60%' },
+  { nombre: 'Aros',    categoria: 'AROS',    imagen: '/images/AROS (1).jpg' },
+  { nombre: 'Collares', categoria: 'COLLARES', imagen: '/images/COLLAR (2).jpg' },
+  { nombre: 'Carteras', categoria: 'CARTERAS', imagen: '/images/MINIBAG (6).jpeg', position: 'center 40%' },
 ];
 
 function HomePage() {
@@ -18,7 +18,7 @@ function HomePage() {
           <Link to="/catalogo" className="hero-btn">Ver catálogo</Link>
         </div>
         <div className="hero-imagen-wrap">
-          <img src="/PORTADA (1).jpeg" alt="Sabina Accesorios" className="hero-imagen" />
+          <img src="/images/PORTADA (1).jpeg" alt="Sabina Accesorios" className="hero-imagen" />
         </div>
       </section>
 
