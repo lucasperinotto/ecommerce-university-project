@@ -49,7 +49,7 @@ cd ..
 Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido:
 
 ```
-MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/?appName=SabinaAccesorios
+MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/?appName=<nombreDelProyecto>
 PORT=3000
 ```
 
@@ -99,15 +99,22 @@ La aplicación quedará disponible en `http://localhost:5173`.
 ```
 ecommerce-university-project/
 ├── client/                 # Frontend (React + Vite)
-│   ├── public/             # Imágenes de productos
+│   ├── public/  
+│       └── images/         # Imágenes de productos
 │   └── src/
-│       ├── components/     # Componentes reutilizables
+│       ├── components/     # Componentes reutilizables de una página
 │       ├── pages/          # Páginas principales
-│       └── services/       # Llamadas a la API
+│       ├── services/       # Llamadas a la API
+│       ├── utils/          # Funciones reutilizables
+│       ├── app.jsx         # Archivo que arranca la app
+│       └── main.jsx        # Archivo que define el funcionamiento de la app
 ├── src/                    # Backend (Node.js + Express)
 │   ├── controllers/        # Lógica de cada endpoint
 │   ├── data/               # Datos en JSON (respaldo)
 │   ├── models/             # Modelos de Mongoose
-│   └── routes/             # Definición de rutas
+│   ├── routes/             # Definición de rutas 
+│   ├── app.js              # Archivo que configura la aplicación
+│   ├── db.js               # Archivo que arranca el servidor y establece la conexión con la base de datos
+│   └── server.js           # Archivo que conecta la aplicación con MongoDB
 └── README.md
 ```

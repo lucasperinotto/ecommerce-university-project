@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import './HomePage.css';
 
 const categorias = [
-  { nombre: 'Anillos', categoria: 'ANILLOS', imagen: '/images/ANILLOS (1).jpg', position: 'center 60%' },
-  { nombre: 'Aros',    categoria: 'AROS',    imagen: '/images/AROS (1).jpg' },
-  { nombre: 'Collares', categoria: 'COLLARES', imagen: '/images/COLLAR (2).jpg' },
-  { nombre: 'Carteras', categoria: 'CARTERAS', imagen: '/images/MINIBAG (6).jpeg', position: 'center 40%' },
+  { nombre: 'Anillos', categoria: 'anillos', imagen: '/images/ANILLOS (1).jpg', position: 'center 60%' },
+  { nombre: 'Aros',    categoria: 'aros',    imagen: '/images/AROS (1).jpg' },
+  { nombre: 'Collares', categoria: 'collares', imagen: '/images/COLLAR (2).jpg' },
+  { nombre: 'Carteras', categoria: 'carteras', imagen: '/images/MINIBAG (6).jpeg', position: 'center 40%' },
 ];
 
 function HomePage() {

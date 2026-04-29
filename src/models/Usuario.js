@@ -7,11 +7,11 @@ const usuarioSchema = new mongoose.Schema({
     contrasena: { type: String, required: true },
     direcciones: [
         {
-            calle: { type: String, required: true },
-            numero: { type: Number, required: true },
-            ciudad: { type: String, required: true },
-            provincia: { type: String, required: true },
-            codigoPostal: { type: String, required: true }
+            calle: { type: String, default: '' },
+            numero: { type: Number, default: '' },
+            ciudad: { type: String, default: '' },
+            provincia: { type: String, default: '' },
+            codigoPostal: { type: String, default: '' }
         }
     ],
     rol: { type: String, enum: ['cliente', 'admin'], default: 'cliente' },

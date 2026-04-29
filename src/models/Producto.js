@@ -5,7 +5,7 @@ const productoSchema = new mongoose.Schema({
     descripcion: { type: String, default: '' },
     precio: { type: Number, required: true, min: 0 },
     cantidad: { type: Number, required: true, min: 0 },
-    imagen: { type: String, default: '' },                  // ej. "/public/producto1.jpg"
+    imagen: { type: String, default: '' },                  // ej. "/images/producto1.jpg"
     categoria: { type: String, enum: ['anillos', 'aros', 'carteras', 'collares'], required: true },
     estado: { type: String, enum: ['activo', 'inactivo'], default: 'activo' }
 }, { timestamps: true });

@@ -43,19 +43,7 @@ const crearUsuario = async (req, res) => {
         nombre,
         apellido,
         mail,
-        contrasena,
-        direcciones: [
-            {
-                idDireccion: direcciones.length + 1,
-                calle,
-                numero,
-                ciudad,
-                provincia,
-                codigoPostal
-            }
-        ],
-        rol: "cliente",
-        estado: "activo"
+        contrasena
     });
         await nuevoUsuario.save();
         res.status(201).json(nuevoUsuario);

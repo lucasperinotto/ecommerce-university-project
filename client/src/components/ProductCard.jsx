@@ -6,10 +6,7 @@ function ProductCard({ producto }) {
   const noDisponible = estado === 'no disponible';
 
   const getObjectPosition = () => {
-    if (categoria === 'ANILLOS') return 'center 70%';
-    if (id === 13) return 'center 85%';
-    if (id === 16) return 'center 40%';
-    if (id === 17) return 'center 0%';
+    if (categoria === 'anillos') return 'center 70%';
     return 'center';
   };
 
