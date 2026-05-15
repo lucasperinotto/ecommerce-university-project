@@ -44,16 +44,28 @@ npm install
 cd ..
 ```
 
-### 4. Configurar variables de entorno
+### 4. Configurar variables de entorno del backend
 
-Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+Crear un archivo `.env` en la **raíz del proyecto** (junto a `package.json`) con el siguiente contenido:
 
-```
+```env
 MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/?appName=<nombreDelProyecto>
 PORT=3000
 ```
 
-### 5. Ejecutar el backend
+> El archivo `.env` está ignorado por Git para proteger las credenciales. Sin él, el servidor no podrá conectarse a la base de datos.
+
+### 5. Configurar variables de entorno del frontend
+
+El frontend también necesita su propio archivo `.env` para saber a qué URL apuntar cuando realiza las llamadas a la API. Crear un archivo `.env` dentro de la carpeta `client/` con el siguiente contenido:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+> Este archivo es obligatorio para que el frontend pueda comunicarse con el backend. Sin él, todas las peticiones a la API fallarán. El prefijo `VITE_` es requerido por Vite para exponer la variable al código React.
+
+### 6. Ejecutar el backend
 
 Desde la raíz del proyecto:
 
@@ -63,7 +75,7 @@ npm run dev
 
 El servidor quedará corriendo en `http://localhost:3000`.
 
-### 6. Ejecutar el frontend
+### 7. Ejecutar el frontend
 
 Desde la carpeta `client`:
 
@@ -73,24 +85,6 @@ npm run dev
 ```
 
 La aplicación quedará disponible en `http://localhost:5173`.
-
----
-
-## Endpoints disponibles
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/productos` | Obtiene todos los productos |
-| GET | `/productos/:id` | Obtiene un producto por ID |
-| POST | `/productos` | Crea un nuevo producto |
-| PUT | `/productos/:id` | Actualiza un producto |
-| DELETE | `/productos/:id` | Baja lógica de un producto |
-| GET | `/usuarios` | Obtiene todos los usuarios |
-| POST | `/usuarios` | Crea un nuevo usuario |
-| GET | `/carrito` | Obtiene el carrito |
-| POST | `/carrito` | Agrega un producto al carrito |
-| GET | `/ordenes` | Obtiene todas las órdenes |
-| POST | `/ordenes` | Crea una nueva orden |
 
 ---
 
@@ -118,3 +112,27 @@ ecommerce-university-project/
 │   └── server.js           # Archivo que conecta la aplicación con MongoDB
 └── README.md
 ```
+
+---
+
+## Endpoints disponibles
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/productos` | Obtiene todos los productos |
+| GET | `/productos/:id` | Obtiene un producto por ID |
+| POST | `/productos` | Crea un nuevo producto |
+| PUT | `/productos/:id` | Actualiza un producto |
+| DELETE | `/productos/:id` | Baja lógica de un producto |
+| GET | `/usuarios` | Obtiene todos los usuarios |
+| GET | `/usuarios/:id` | Obtiene un usuario por ID |
+| POST | `/usuarios` | Registra un nuevo usuario |
+| PUT | `/usuarios/:id` | Actualiza un usuario |
+| DELETE | `/usuarios/:id` | Baja lógica de un usuario |
+| GET | `/carrito` | Obtiene todos los carritos |
+| GET | `/carrito/:id` | Obtiene el carrito de un usuario |
+| POST | `/carrito/:id` | Crea un carrito para un usuario |
+| POST | `/carrito/:id/items` | Agrega un producto al carrito |
+| GET | `/ordenes` | Obtiene todas las órdenes |
+| GET | `/ordenes/:id` | Obtiene las órdenes de un usuario |
+| POST | `/ordenes` | Crea una nueva orden |
