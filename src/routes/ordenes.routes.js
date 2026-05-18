@@ -3,13 +3,13 @@ const router = express.Router();
 
 const {
     obtenerOrdenes,
-    obtenerOrdenPorUsuario,
+    obtenerOrdenesPorUsuario,
     generarOrden
 } = require('../controllers/ordenes.controller');
 
 router.get('/', obtenerOrdenes);
-router.get('/:id', obtenerOrdenPorUsuario);
-router.post('/', generarOrden);
+router.get('/:id', obtenerOrdenesPorUsuario);
+router.post('/:id', generarOrden);
 
 module.exports = router;
 

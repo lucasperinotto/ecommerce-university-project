@@ -54,8 +54,16 @@ const agregarProductoAlCarrito = async (req, res) => {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
+    if (precio <= 0) {
+        return res.status(400).json({ error: 'Ingrese un monto válido.' });
+    }
+
+    if (cantidad <= 0) {
+        return res.status(400).json({ error: 'Ingrese una cantidad válida.' });
+    }
+
     let productoFinal;
-    const productoExistente = carrito.items.find(item => item.idProducto === idProducto);
+    const productoExistente = carrito.items.find(item => item.idProducto.toString() === idProducto.toString());
     if (productoExistente) {
         productoExistente.cantidad += cantidad;
         productoFinal = productoExistente;
@@ -69,6 +77,7 @@ const agregarProductoAlCarrito = async (req, res) => {
         productoFinal = productoAgregado;
     }
 
+    carrito.items.push(productoFinal);
     await carrito.save();
     res.status(201).json(productoFinal);
 };
