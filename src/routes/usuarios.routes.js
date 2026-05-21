@@ -9,10 +9,15 @@ const {
     bajaLogicaUsuario
 } = require('../controllers/usuarios.controller');
 
-router.get('/', obtenerUsuarios);
-router.get('/:id', obtenerUsuarioPorId);
+const {
+    authMiddleware,
+    adminMiddleware
+} = require('../middlewares/auth.middleware')
+
+router.get('/', authMiddleware, adminMiddleware, obtenerUsuarios);
+router.get('/:id', authMiddleware, obtenerUsuarioPorId);
 router.post('/', crearUsuario);
-router.put('/:id', actualizarUsuario);
-router.delete('/:id', bajaLogicaUsuario);
+router.put('/:id', authMiddleware, actualizarUsuario);
+router.delete('/:id', authMiddleware, adminMiddleware, bajaLogicaUsuario);
 
 module.exports = router;

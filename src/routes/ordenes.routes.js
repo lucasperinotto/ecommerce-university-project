@@ -7,9 +7,14 @@ const {
     generarOrden
 } = require('../controllers/ordenes.controller');
 
-router.get('/', obtenerOrdenes);
-router.get('/:id', obtenerOrdenesPorUsuario);
-router.post('/:id', generarOrden);
+const {
+    authMiddleware,
+    adminMiddleware
+} = require('../middlewares/auth.middleware')
+
+router.get('/', authMiddleware, adminMiddleware, obtenerOrdenes);
+router.get('/:id', authMiddleware, adminMiddleware, obtenerOrdenesPorUsuario);
+router.post('/:id', authMiddleware, generarOrden);
 
 module.exports = router;
 
