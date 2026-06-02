@@ -120,10 +120,29 @@ const bajaLogicaProducto = async (req, res) => {
     }
 }
 
+const ajustarStock = async (req, res) => {
+    try {
+        const { delta } = req.body;
+        if (typeof delta !== 'number') {
+            return res.status(400).json({ error: 'El campo delta debe ser un número.' });
+        }
+        const producto = await Producto.findByIdAndUpdate(
+            req.params.id,
+            { $inc: { cantidad: delta } },
+            { new: true }
+        );
+        if (!producto) return res.status(404).json({ error: 'Producto no encontrado.' });
+        res.json(producto);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al ajustar el stock.' });
+    }
+};
+
 module.exports = {
     obtenerProductos,
     obtenerProductoPorId,
     crearProducto,
     actualizarProducto,
-    bajaLogicaProducto
+    bajaLogicaProducto,
+    ajustarStock
 }

@@ -17,6 +17,13 @@
   opacity: 0.65;
 }
 
+.product-card-link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  color: inherit;
+}
+
 .product-card-img-wrap {
   position: relative;
   height: 300px;
@@ -62,7 +69,7 @@
 }
 
 .product-card-info {
-  padding: 14px 16px 18px;
+  padding: 14px 16px 10px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -86,4 +93,33 @@
   font-weight: bold;
   color: var(--gris-oscuro);
   margin-top: 6px;
+}
+
+/* ── Agregar al carrito ── */
+.product-card-actions {
+  padding: 10px 16px 16px;
+}
+
+.product-card-btn {
+  width: 100%;
+  background: var(--gris-oscuro);
+  color: var(--blanco);
+  border: none;
+  padding: 10px 0;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.2s, color 0.2s;
+}
+
+.product-card-btn:hover:not(:disabled) {
+  background: var(--verde);
+  color: var(--gris-oscuro);
+}
+
+.product-card-btn:disabled {
+  background: var(--gris-claro);
+  color: var(--gris-medio);
+  cursor: not-allowed;
 }

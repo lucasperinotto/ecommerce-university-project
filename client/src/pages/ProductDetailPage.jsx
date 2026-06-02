@@ -1,39 +1,45 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProductoById } from '../services/productosService';
+import { useCarrito } from '../context/CarritoContext';
 import './ProductDetailPage.css';
 import axios from 'axios';
 
 function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { agregarItem } = useCarrito();
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [imagenActiva, setImagenActiva] = useState(0);
+  const [agregado, setAgregado] = useState(false);
 
   useEffect(() => {
     const fetchProducto = async () => {
-    try {
+      try {
         const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/productos/${id}`);
-        console.log(id);
         setProducto(response.data);
-    } catch (err) {
+      } catch (err) {
         setError('Producto no encontrado.');
         console.error(err);
-    } finally {
-      setCargando(false);
-    }
-  };
-
+      } finally {
+        setCargando(false);
+      }
+    };
     fetchProducto();
-}, [id]);
+  }, [id]);
 
   if (cargando) return <p className="detalle-estado">Cargando...</p>;
   if (error) return <p className="detalle-estado detalle-error">{error}</p>;
 
-  const noDisponible = producto.estado === 'no disponible';
+  const noDisponible = producto.estado === 'inactivo';
   const imagenes = producto.imagenes || (producto.imagen ? [producto.imagen] : []);
+
+  const handleAgregar = () => {
+    agregarItem(producto);
+    setAgregado(true);
+    setTimeout(() => setAgregado(false), 2000);
+  };
 
   return (
     <main className="detalle">
@@ -86,8 +92,12 @@ function ProductDetailPage() {
             </p>
           )}
 
-          <button className="detalle-btn" disabled={noDisponible}>
-            {noDisponible ? 'Agotado' : 'Agregar al carrito'}
+          <button
+            className="detalle-btn"
+            disabled={noDisponible}
+            onClick={handleAgregar}
+          >
+            {noDisponible ? 'Agotado' : agregado ? '¡Agregado!' : 'Agregar al carrito'}
           </button>
         </div>
       </div>

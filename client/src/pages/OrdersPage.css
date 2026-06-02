@@ -1,0 +1,112 @@
+.ordenes {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.ordenes-titulo {
+  font-size: 1.8rem;
+  font-weight: normal;
+  margin-bottom: 36px;
+}
+
+.ordenes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.orden-card {
+  background: var(--blanco);
+  border: 1px solid var(--gris-claro);
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: block;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.orden-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+  border-color: var(--verde);
+}
+
+.orden-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.orden-id {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gris-medio);
+}
+
+.orden-estado {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--verde-palido);
+  color: var(--gris-oscuro);
+}
+
+.orden-estado--cancelado {
+  background: #fde8e8;
+  color: #c0392b;
+}
+
+.orden-estado--entregado {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+
+.orden-card-body {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  font-size: 0.92rem;
+}
+
+.orden-fecha {
+  color: var(--gris-medio);
+}
+
+.orden-items {
+  color: var(--gris-medio);
+}
+
+.orden-total {
+  margin-left: auto;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.ordenes-vacio {
+  text-align: center;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  color: var(--gris-medio);
+}
+
+.ordenes-btn-catalogo {
+  background: var(--gris-oscuro);
+  color: var(--blanco);
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+
+.ordenes-btn-catalogo:hover {
+  background: var(--verde);
+  color: var(--gris-oscuro);
+}

@@ -1,0 +1,260 @@
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.admin-header h1 {
+  font-size: 1.8rem;
+  font-weight: normal;
+}
+
+.admin-btn-nuevo {
+  background: var(--gris-oscuro);
+  color: var(--blanco);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+}
+
+.admin-btn-nuevo:hover {
+  background: var(--verde);
+  color: var(--gris-oscuro);
+}
+
+/* ── Form panel ── */
+.admin-form-wrap {
+  background: var(--blanco);
+  border: 1px solid var(--verde);
+  border-radius: 12px;
+  padding: 28px 24px;
+  margin-bottom: 28px;
+}
+
+.admin-form-wrap h2 {
+  font-size: 1rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 20px;
+  color: var(--gris-oscuro);
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-inline-form {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-form-acciones {
+  display: flex;
+  gap: 12px;
+}
+
+.admin-btn-guardar {
+  background: var(--gris-oscuro);
+  color: var(--blanco);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  transition: background 0.2s;
+}
+
+.admin-btn-guardar:hover:not(:disabled) {
+  background: var(--verde);
+  color: var(--gris-oscuro);
+}
+
+.admin-btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-btn-cancelar {
+  background: none;
+  border: 1px solid var(--gris-claro);
+  color: var(--gris-medio);
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  transition: border-color 0.2s;
+}
+
+.admin-btn-cancelar:hover {
+  border-color: var(--gris-medio);
+}
+
+/* ── Table ── */
+.admin-tabla-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--gris-claro);
+}
+
+.admin-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--blanco);
+  font-size: 0.9rem;
+}
+
+.admin-tabla th {
+  background: var(--blanco-calido);
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--gris-medio);
+  font-weight: normal;
+  border-bottom: 1px solid var(--gris-claro);
+}
+
+.admin-tabla td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--gris-claro);
+  color: var(--gris-oscuro);
+  vertical-align: middle;
+}
+
+.admin-tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-tabla tbody tr:hover {
+  background: var(--beige);
+}
+
+.fila-inactiva td {
+  color: var(--gris-medio);
+}
+
+.fila-form {
+  background: var(--verde-palido) !important;
+}
+
+.fila-form:hover {
+  background: var(--verde-palido) !important;
+}
+
+/* ── Badges ── */
+.admin-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-activo {
+  background: var(--verde-palido);
+  color: #2e7d32;
+}
+
+.badge-inactivo {
+  background: #fde8e8;
+  color: #c0392b;
+}
+
+.badge-admin {
+  background: #ede7f6;
+  color: #5e35b1;
+}
+
+.orden-estado--pendiente-de-pago {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.orden-estado--procesando {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.orden-estado--enviado {
+  background: #e0f2f1;
+  color: #00695c;
+}
+
+.orden-estado--entregado {
+  background: var(--verde-palido);
+  color: #2e7d32;
+}
+
+.orden-estado--cancelado {
+  background: #fde8e8;
+  color: #c0392b;
+}
+
+/* ── Action buttons ── */
+.admin-acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-btn-accion {
+  background: none;
+  border: 1px solid var(--gris-claro);
+  color: var(--gris-oscuro);
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  transition: border-color 0.2s;
+}
+
+.admin-btn-accion:hover {
+  border-color: var(--gris-oscuro);
+}
+
+.admin-btn-baja {
+  background: none;
+  border: 1px solid #fde8e8;
+  color: #c0392b;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+
+.admin-btn-baja:hover {
+  background: #fde8e8;
+}
+
+.admin-btn-restaurar {
+  background: none;
+  border: 1px solid var(--verde-palido);
+  color: #27ae60;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+
+.admin-btn-restaurar:hover {
+  background: var(--verde-palido);
+}
+
+.orden-id-col {
+  font-size: 0.8rem;
+  color: var(--gris-medio);
+  font-family: monospace;
+}

@@ -6,7 +6,8 @@ const {
     obtenerProductoPorId,
     crearProducto,
     actualizarProducto,
-    bajaLogicaProducto
+    bajaLogicaProducto,
+    ajustarStock
 } = require('../controllers/productos.controller');
 
 const {
@@ -19,5 +20,6 @@ router.get('/:id', obtenerProductoPorId);
 router.post('/', authMiddleware, adminMiddleware, crearProducto);
 router.put('/:id', authMiddleware, adminMiddleware, actualizarProducto);
 router.delete('/:id', authMiddleware, adminMiddleware, bajaLogicaProducto);
+router.patch('/:id/stock', ajustarStock);
 
 module.exports = router;

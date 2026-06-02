@@ -1,0 +1,70 @@
+.perfil-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.perfil-box {
+  background: var(--blanco);
+  border: 1px solid var(--gris-claro);
+  border-radius: 12px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.perfil-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.perfil-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--gris-claro);
+  padding-bottom: 12px;
+}
+
+.perfil-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gris-medio);
+}
+
+.perfil-valor {
+  font-size: 0.95rem;
+  color: var(--gris-oscuro);
+}
+
+.perfil-rol {
+  background: var(--verde-palido);
+  color: var(--gris-oscuro);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.perfil-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.perfil-btn-cancelar {
+  background: none;
+  border: 1px solid var(--gris-claro);
+  color: var(--gris-medio);
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.perfil-btn-cancelar:hover {
+  border-color: var(--gris-medio);
+}

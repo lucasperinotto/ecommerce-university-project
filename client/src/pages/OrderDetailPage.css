@@ -1,0 +1,136 @@
+.orden-detalle {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.orden-detalle-volver {
+  background: none;
+  border: none;
+  color: var(--gris-medio);
+  font-size: 0.88rem;
+  margin-bottom: 28px;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.orden-detalle-volver:hover {
+  color: var(--gris-oscuro);
+}
+
+.orden-detalle-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+.orden-detalle-titulo {
+  font-size: 1.6rem;
+  font-weight: normal;
+}
+
+.orden-detalle-titulo span {
+  color: var(--gris-medio);
+  font-size: 1.2rem;
+}
+
+.orden-detalle-contenido {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 32px;
+  align-items: start;
+}
+
+.orden-detalle-items {
+  background: var(--blanco);
+  border: 1px solid var(--gris-claro);
+  border-radius: 12px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.orden-detalle-items h2 {
+  font-size: 0.9rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--gris-medio);
+  margin-bottom: 4px;
+}
+
+.orden-detalle-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+  border-bottom: 1px solid var(--gris-claro);
+  padding-bottom: 12px;
+}
+
+.orden-detalle-item:last-of-type {
+  border-bottom: none;
+}
+
+.orden-detalle-item-nombre {
+  flex: 1;
+}
+
+.orden-detalle-item-cant {
+  color: var(--gris-medio);
+  font-size: 0.85rem;
+}
+
+.orden-detalle-item-precio {
+  font-weight: bold;
+  min-width: 80px;
+  text-align: right;
+}
+
+.orden-detalle-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  border-top: 1px solid var(--gris-claro);
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+.orden-detalle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.orden-detalle-seccion {
+  background: var(--blanco);
+  border: 1px solid var(--gris-claro);
+  border-radius: 12px;
+  padding: 20px 22px;
+}
+
+.orden-detalle-seccion h2 {
+  font-size: 0.78rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gris-medio);
+  margin-bottom: 8px;
+}
+
+.orden-detalle-seccion p {
+  font-size: 0.92rem;
+  color: var(--gris-oscuro);
+}
+
+.orden-detalle-sin-dato {
+  color: var(--gris-medio);
+}
+
+@media (max-width: 680px) {
+  .orden-detalle-contenido {
+    grid-template-columns: 1fr;
+  }
+}

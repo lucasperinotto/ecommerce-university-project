@@ -1,23 +1,16 @@
 # Sabina Accesorios — E-commerce
 
-Aplicación web de e-commerce para la venta de accesorios (anillos, aros, collares y carteras). Desarrollada con React en el frontend y Node.js + Express en el backend, con base de datos MongoDB Atlas.
+Tienda online de accesorios para mujer (anillos, aros, collares y carteras). Trabajo Práctico Integrador para la materia **Programación IV** — TUP UTN FRCU 2026.
 
----
-
-## Tecnologías utilizadas
-
-- **Frontend:** React, Vite, React Router, Axios
-- **Backend:** Node.js, Express
-- **Base de datos:** MongoDB Atlas (Mongoose)
-- **Control de versiones:** Git / GitHub
+Stack: **MERN** (MongoDB Atlas, Express, React/Vite, Node.js)
 
 ---
 
 ## Requisitos previos
 
-- Node.js instalado (v18 o superior)
-- npm instalado
-- Conexión a internet (para MongoDB Atlas)
+- Node.js v18 o superior
+- npm
+- Cuenta en MongoDB Atlas (o URI de conexión provista por el equipo)
 
 ---
 
@@ -30,13 +23,31 @@ git clone https://github.com/lucasperinotto/ecommerce-university-project.git
 cd ecommerce-university-project
 ```
 
-### 2. Instalar dependencias del backend
+### 2. Configurar variables de entorno del backend
+
+Crear un archivo `.env` en la **raíz del proyecto** (junto a `package.json`):
+
+```env
+PORT=3000
+MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/sabina-accesorios
+JWT_SECRET=sabina2026secreto
+```
+
+### 3. Configurar variables de entorno del frontend
+
+Crear un archivo `.env` dentro de la carpeta `client/`:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+### 4. Instalar dependencias del backend
 
 ```bash
 npm install
 ```
 
-### 3. Instalar dependencias del frontend
+### 5. Instalar dependencias del frontend
 
 ```bash
 cd client
@@ -44,47 +55,34 @@ npm install
 cd ..
 ```
 
-### 4. Configurar variables de entorno del backend
+### 6. Cargar productos de prueba (primera vez)
 
-Crear un archivo `.env` en la **raíz del proyecto** (junto a `package.json`) con el siguiente contenido:
-
-```env
-MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/?appName=<nombreDelProyecto>
-PORT=3000
+```bash
+node src/seed.js
 ```
 
-> El archivo `.env` está ignorado por Git para proteger las credenciales. Sin él, el servidor no podrá conectarse a la base de datos.
+Carga los 17 productos del archivo `src/data/productos.data.json`. Si ya hay productos en la base de datos, no duplica.
 
-### 5. Configurar variables de entorno del frontend
-
-El frontend también necesita su propio archivo `.env` para saber a qué URL apuntar cuando realiza las llamadas a la API. Crear un archivo `.env` dentro de la carpeta `client/` con el siguiente contenido:
-
-```env
-VITE_API_URL=http://localhost:3000
-```
-
-> Este archivo es obligatorio para que el frontend pueda comunicarse con el backend. Sin él, todas las peticiones a la API fallarán. El prefijo `VITE_` es requerido por Vite para exponer la variable al código React.
-
-### 6. Ejecutar el backend
+### 7. Ejecutar el backend
 
 Desde la raíz del proyecto:
 
 ```bash
-npm run dev
+npm start
 ```
 
-El servidor quedará corriendo en `http://localhost:3000`.
+El servidor queda corriendo en `http://localhost:3000`.
 
-### 7. Ejecutar el frontend
+### 8. Ejecutar el frontend
 
-Desde la carpeta `client`:
+Desde la carpeta `client/`:
 
 ```bash
 cd client
 npm run dev
 ```
 
-La aplicación quedará disponible en `http://localhost:5173`.
+La aplicación queda disponible en `http://localhost:5173`.
 
 ---
 
@@ -92,30 +90,45 @@ La aplicación quedará disponible en `http://localhost:5173`.
 
 ```
 ecommerce-university-project/
-├── client/                 # Frontend (React + Vite)
-│   ├── public/  
-│       └── images/         # Imágenes de productos
+├── client/                         # Frontend (React + Vite)
+│   ├── public/images/              # Imágenes de productos y logo
 │   └── src/
-│       ├── components/     # Componentes reutilizables de una página
-│       ├── pages/          # Páginas principales
-│       ├── services/       # Llamadas a la API
-│       ├── utils/          # Funciones reutilizables
-│       ├── app.jsx         # Archivo que arranca la app
-│       └── main.jsx        # Archivo que define el funcionamiento de la app
-├── src/                    # Backend (Node.js + Express)
-│   ├── controllers/        # Lógica de cada endpoint
-│   ├── data/               # Datos en JSON (respaldo)
-│   ├── models/             # Modelos de Mongoose
-│   ├── routes/             # Definición de rutas 
-│   ├── app.js              # Archivo que configura la aplicación
-│   ├── db.js               # Archivo que arranca el servidor y establece la conexión con la base de datos
-│   └── server.js           # Archivo que conecta la aplicación con MongoDB
+│       ├── components/             # Navbar, Footer, ProductCard, ModalConfirm
+│       │   ├── PrivateRoute.jsx    # Protege rutas que requieren login
+│       │   └── AdminRoute.jsx      # Protege rutas de administrador
+│       ├── context/
+│       │   ├── AuthContext.jsx     # Autenticación JWT + localStorage
+│       │   └── CarritoContext.jsx  # Carrito en localStorage
+│       ├── pages/
+│       │   ├── admin/              # AdminProductsPage, AdminUsersPage, AdminOrdersPage
+│       │   ├── LoginPage.jsx
+│       │   ├── RegisterPage.jsx
+│       │   ├── CatalogPage.jsx
+│       │   ├── ProductDetailPage.jsx
+│       │   ├── CartPage.jsx
+│       │   ├── CheckoutPage.jsx
+│       │   ├── ProfilePage.jsx
+│       │   ├── OrdersPage.jsx
+│       │   └── OrderDetailPage.jsx
+│       └── services/               # authService, productosService, usuariosService, ordenesService
+├── src/                            # Backend (Node.js + Express)
+│   ├── controllers/
+│   ├── data/productos.data.json    # Datos iniciales para seed
+│   ├── models/                     # Producto, Usuario, Orden, Carrito
+│   ├── routes/
+│   ├── seed.js                     # Script de carga inicial
+│   ├── app.js
+│   ├── db.js
+│   └── server.js
+├── .env                            # Variables de entorno (no incluido en Git)
 └── README.md
 ```
 
 ---
 
-## Endpoints disponibles
+## Endpoints de la API
+
+### Productos
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
@@ -123,16 +136,54 @@ ecommerce-university-project/
 | GET | `/productos/:id` | Obtiene un producto por ID |
 | POST | `/productos` | Crea un nuevo producto |
 | PUT | `/productos/:id` | Actualiza un producto |
-| DELETE | `/productos/:id` | Baja lógica de un producto |
+| DELETE | `/productos/:id` | Baja lógica (estado → inactivo) |
+| PATCH | `/productos/:id/stock` | Ajusta el stock (`{ delta: number }`) |
+
+### Usuarios
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
 | GET | `/usuarios` | Obtiene todos los usuarios |
 | GET | `/usuarios/:id` | Obtiene un usuario por ID |
 | POST | `/usuarios` | Registra un nuevo usuario |
 | PUT | `/usuarios/:id` | Actualiza un usuario |
-| DELETE | `/usuarios/:id` | Baja lógica de un usuario |
-| GET | `/carrito` | Obtiene todos los carritos |
-| GET | `/carrito/:id` | Obtiene el carrito de un usuario |
-| POST | `/carrito/:id` | Crea un carrito para un usuario |
-| POST | `/carrito/:id/items` | Agrega un producto al carrito |
+| DELETE | `/usuarios/:id` | Baja lógica (estado → inactivo) |
+
+### Órdenes
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
 | GET | `/ordenes` | Obtiene todas las órdenes |
-| GET | `/ordenes/:id` | Obtiene las órdenes de un usuario |
+| GET | `/ordenes/:id` | Obtiene órdenes de un usuario |
 | POST | `/ordenes` | Crea una nueva orden |
+
+### Auth *(pendiente de implementación)*
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/auth/register` | Registrar usuario con JWT |
+| POST | `/auth/login` | Login — devuelve token JWT |
+| POST | `/auth/forgot-password` | Solicitar recuperación de contraseña |
+| POST | `/auth/reset-password` | Resetear contraseña con token |
+
+---
+
+## Rutas del frontend
+
+| Ruta | Acceso | Descripción |
+|------|--------|-------------|
+| `/` | Público | Home |
+| `/catalogo` | Público | Catálogo (filtra por `?categoria=`) |
+| `/producto/:id` | Público | Detalle de producto |
+| `/carrito` | Público | Carrito de compras |
+| `/login` | Público | Inicio de sesión |
+| `/registro` | Público | Registro de usuario |
+| `/recuperar-contrasena` | Público | Recuperar contraseña |
+| `/restablecer-contrasena/:token` | Público | Resetear contraseña |
+| `/checkout` | Requiere login | Confirmar orden |
+| `/perfil` | Requiere login | Perfil del usuario |
+| `/mis-ordenes` | Requiere login | Historial de órdenes |
+| `/mis-ordenes/:id` | Requiere login | Detalle de orden |
+| `/admin/productos` | Admin | ABM de productos |
+| `/admin/usuarios` | Admin | ABM de usuarios |
+| `/admin/ordenes` | Admin | Listado de órdenes |

@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { getProductos } from '../services/productosService';
 import ProductCard from '../components/ProductCard';
 import './CatalogPage.css';
-import axios from 'axios';
 
 function CatalogPage() {
   const [productos, setProductos] = useState([]);
@@ -14,17 +13,16 @@ function CatalogPage() {
 
   useEffect(() => {
     const fetchProductos = async () => {
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/productos`);
-        setProductos(response.data);
-    } catch (err) {
+      try {
+        const { data } = await getProductos();
+        setProductos(data.filter((p) => p.estado !== 'inactivo'));
+      } catch (err) {
         setError('No se pudieron cargar los productos.');
         console.error(err);
-    } finally {
+      } finally {
         setCargando(false);
-    }
-  };
-  
+      }
+    };
     fetchProductos();
   }, []);
 
@@ -36,14 +34,14 @@ function CatalogPage() {
     : productos;
 
   const titulo = categoriaFiltro
-    ? categoriaFiltro.charAt(0) + categoriaFiltro.slice(1).toLowerCase()
+    ? categoriaFiltro.charAt(0).toUpperCase() + categoriaFiltro.slice(1)
     : 'Catálogo';
 
   return (
     <main className="catalogo">
       <div className="catalogo-header">
         <h1>{titulo}</h1>
-        <p>{productosFiltrados.length} productos</p>
+        <p>{productosFiltrados.length} producto{productosFiltrados.length !== 1 ? 's' : ''}</p>
       </div>
 
       {productosFiltrados.length === 0 ? (
@@ -51,7 +49,7 @@ function CatalogPage() {
       ) : (
         <div className="catalogo-grid">
           {productosFiltrados.map((producto) => (
-            <ProductCard key={producto.id} producto={producto} />
+            <ProductCard key={producto._id} producto={producto} />
           ))}
         </div>
       )}
