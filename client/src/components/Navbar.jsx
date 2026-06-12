@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCarrito } from '../context/CarritoContext';
+import { useToast } from '../context/ToastContext';
 import './Navbar.css';
 
 function Navbar() {
   const { usuario, logout } = useAuth();
   const { cantidadTotal } = useCarrito();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [hamburguesa, setHamburguesa] = useState(false);
   const [dropdownAbierto, setDropdownAbierto] = useState(false);
@@ -14,8 +16,10 @@ function Navbar() {
   const cerrarHamburguesa = () => setHamburguesa(false);
 
   const handleLogout = () => {
+    const nombre = usuario?.nombre;
     logout();
     setDropdownAbierto(false);
+    showToast(`¡Hasta pronto, ${nombre}!`);
     navigate('/');
   };
 

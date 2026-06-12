@@ -130,18 +130,29 @@
 
 .checkout-item {
   display: flex;
-  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
   font-size: 0.9rem;
   color: var(--gris-oscuro);
 }
 
 .checkout-item-nombre {
   flex: 1;
-  margin-right: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .checkout-item-cantidad {
+  flex-shrink: 0;
   color: var(--gris-medio);
+  font-size: 0.85rem;
+}
+
+.checkout-item-precio {
+  flex-shrink: 0;
+  margin-left: 2px;
 }
 
 .checkout-total {

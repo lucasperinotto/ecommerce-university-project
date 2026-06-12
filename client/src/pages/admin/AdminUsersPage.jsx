@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { getAll, updateProfile, deleteUser, restoreUser } from '../../services/usuariosService';
+import Spinner from '../../components/Spinner';
 import './AdminPage.css';
 
 const FORM_VACIO = { nombre: '', apellido: '' };
@@ -74,7 +75,7 @@ function AdminUsersPage() {
     }
   };
 
-  if (cargando) return <p className="pagina-estado">Cargando usuarios...</p>;
+  if (cargando) return <Spinner texto="Cargando usuarios..." />;
   if (error) return <p className="pagina-estado pagina-error">{error}</p>;
 
   return (

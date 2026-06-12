@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getMisOrdenes } from '../services/ordenesService';
+import Spinner from '../components/Spinner';
 import './OrdersPage.css';
 
 function OrdersPage() {
@@ -28,7 +29,7 @@ function OrdersPage() {
     fetchOrdenes();
   }, [usuario._id]);
 
-  if (cargando) return <p className="pagina-estado">Cargando órdenes...</p>;
+  if (cargando) return <Spinner texto="Cargando órdenes..." />;
   if (error) return <p className="pagina-estado pagina-error">{error}</p>;
 
   return (

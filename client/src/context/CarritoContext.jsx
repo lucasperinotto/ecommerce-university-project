@@ -12,21 +12,30 @@ export function CarritoProvider({ children }) {
   const agregarItem = (producto, cantidad = 1) => {
     setItems((prev) => {
       const existe = prev.find((i) => i._id === producto._id);
-      const siguiente = existe
-        ? prev.map((i) =>
-            i._id === producto._id ? { ...i, cantidad: i.cantidad + cantidad } : i
-          )
-        : [
-            ...prev,
-            {
-              _id: producto._id,
-              nombre: producto.nombre,
-              precio: producto.precio,
-              imagen: producto.imagen,
-              categoria: producto.categoria,
-              cantidad,
-            },
-          ];
+      const stockMax = producto.cantidad ?? null;
+      if (existe) {
+        const nuevaCantidad = stockMax !== null
+          ? Math.min(existe.cantidad + cantidad, stockMax)
+          : existe.cantidad + cantidad;
+        if (nuevaCantidad === existe.cantidad) return prev;
+        const siguiente = prev.map((i) =>
+          i._id === producto._id ? { ...i, cantidad: nuevaCantidad } : i
+        );
+        localStorage.setItem('carrito', JSON.stringify(siguiente));
+        return siguiente;
+      }
+      const siguiente = [
+        ...prev,
+        {
+          _id: producto._id,
+          nombre: producto.nombre,
+          precio: producto.precio,
+          imagen: producto.imagen,
+          categoria: producto.categoria,
+          stock: stockMax,
+          cantidad: stockMax !== null ? Math.min(cantidad, stockMax) : cantidad,
+        },
+      ];
       localStorage.setItem('carrito', JSON.stringify(siguiente));
       return siguiente;
     });
@@ -34,10 +43,13 @@ export function CarritoProvider({ children }) {
 
   const actualizarCantidad = (id, cantidad) => {
     setItems((prev) => {
+      const item = prev.find((i) => i._id === id);
+      const stockMax = item?.stock ?? null;
+      const cantidadFinal = stockMax !== null ? Math.min(cantidad, stockMax) : cantidad;
       const siguiente =
-        cantidad <= 0
+        cantidadFinal <= 0
           ? prev.filter((i) => i._id !== id)
-          : prev.map((i) => (i._id === id ? { ...i, cantidad } : i));
+          : prev.map((i) => (i._id === id ? { ...i, cantidad: cantidadFinal } : i));
       localStorage.setItem('carrito', JSON.stringify(siguiente));
       return siguiente;
     });

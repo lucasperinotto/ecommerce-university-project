@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
+import { useToast } from '../context/ToastContext';
 import './ProductCard.css';
 
 function ProductCard({ producto }) {
   const { agregarItem } = useCarrito();
+  const { showToast } = useToast();
   const { nombre, precio, categoria, estado, imagen } = producto;
   const noDisponible = estado === 'inactivo';
 
@@ -15,6 +17,7 @@ function ProductCard({ producto }) {
   const handleAgregar = (e) => {
     e.preventDefault();
     agregarItem(producto);
+    showToast('Agregado al carrito con éxito', 'info');
   };
 
   return (

@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
+import { useToast } from '../context/ToastContext';
+import Spinner from '../components/Spinner';
 import './ProductDetailPage.css';
 import axios from 'axios';
 
 function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { agregarItem } = useCarrito();
+  const { agregarItem, items } = useCarrito();
+  const { showToast } = useToast();
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -29,14 +32,19 @@ function ProductDetailPage() {
     fetchProducto();
   }, [id]);
 
-  if (cargando) return <p className="detalle-estado">Cargando...</p>;
+  if (cargando) return <Spinner />;
   if (error) return <p className="detalle-estado detalle-error">{error}</p>;
 
-  const noDisponible = producto.estado === 'inactivo';
+  const agotado = producto.estado === 'inactivo' || producto.cantidad === 0;
+  const cantidadEnCarrito = items.find((i) => i._id === producto._id)?.cantidad ?? 0;
+  const enStockMaximo = producto.cantidad != null && cantidadEnCarrito >= producto.cantidad;
+  const noDisponible = agotado || enStockMaximo;
   const imagenes = producto.imagenes || (producto.imagen ? [producto.imagen] : []);
 
   const handleAgregar = () => {
+    if (noDisponible) return;
     agregarItem(producto);
+    showToast('Agregado al carrito con éxito', 'info');
     setAgregado(true);
     setTimeout(() => setAgregado(false), 2000);
   };
@@ -84,11 +92,9 @@ function ProductDetailPage() {
             <p className="detalle-descripcion">{producto.descripcion}</p>
           )}
 
-          {producto.cantidad !== undefined && (
+          {producto.cantidad !== undefined && !noDisponible && (
             <p className="detalle-stock">
-              {noDisponible
-                ? 'Sin stock'
-                : `Stock disponible: ${producto.cantidad} unidades`}
+              {`Stock disponible: ${producto.cantidad} unidades`}
             </p>
           )}
 
@@ -97,7 +103,7 @@ function ProductDetailPage() {
             disabled={noDisponible}
             onClick={handleAgregar}
           >
-            {noDisponible ? 'Agotado' : agregado ? '¡Agregado!' : 'Agregar al carrito'}
+            {noDisponible ? 'Sin stock' : agregado ? '¡Agregado!' : 'Agregar al carrito'}
           </button>
         </div>
       </div>

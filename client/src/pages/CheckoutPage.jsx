@@ -352,11 +352,9 @@ function CheckoutPage() {
           <h2>Tu pedido</h2>
           {items.map((item) => (
             <div key={item._id} className="checkout-item">
-              <span className="checkout-item-nombre">
-                {item.nombre}{' '}
-                <span className="checkout-item-cantidad">× {item.cantidad}</span>
-              </span>
-              <span>${Number(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+              <span className="checkout-item-nombre">{item.nombre}</span>
+              <span className="checkout-item-cantidad">× {item.cantidad}</span>
+              <span className="checkout-item-precio">${Number(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
             </div>
           ))}
           <div className="checkout-total">

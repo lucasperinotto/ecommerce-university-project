@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CarritoProvider } from './context/CarritoContext';
+import { ToastProvider } from './context/ToastContext';
+import './components/Toast.css';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -30,6 +32,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastProvider>
         <CarritoProvider>
           <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
@@ -60,6 +63,7 @@ function App() {
             <Footer />
           </div>
         </CarritoProvider>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -6,6 +6,7 @@ import {
   bajaLogicaProducto,
   restaurarProducto,
 } from '../../services/productosService';
+import Spinner from '../../components/Spinner';
 import './AdminPage.css';
 
 const CATEGORIAS = ['anillos', 'aros', 'carteras', 'collares'];
@@ -115,7 +116,7 @@ function AdminProductsPage() {
     }
   };
 
-  if (cargando) return <p className="pagina-estado">Cargando productos...</p>;
+  if (cargando) return <Spinner texto="Cargando productos..." />;
   if (error) return <p className="pagina-estado pagina-error">{error}</p>;
 
   return (

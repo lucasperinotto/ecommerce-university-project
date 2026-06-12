@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getTodasOrdenes } from '../../services/ordenesService';
+import Spinner from '../../components/Spinner';
 import './AdminPage.css';
 
 function AdminOrdersPage() {
@@ -21,7 +22,7 @@ function AdminOrdersPage() {
     fetchOrdenes();
   }, []);
 
-  if (cargando) return <p className="pagina-estado">Cargando órdenes...</p>;
+  if (cargando) return <Spinner texto="Cargando órdenes..." />;
   if (error) return <p className="pagina-estado pagina-error">{error}</p>;
 
   return (

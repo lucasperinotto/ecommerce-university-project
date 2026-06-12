@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getProductos } from '../services/productosService';
 import ProductCard from '../components/ProductCard';
+import Spinner from '../components/Spinner';
 import './CatalogPage.css';
 
 function CatalogPage() {
@@ -26,7 +27,7 @@ function CatalogPage() {
     fetchProductos();
   }, []);
 
-  if (cargando) return <p className="catalogo-estado">Cargando productos...</p>;
+  if (cargando) return <Spinner texto="Cargando productos..." />;
   if (error) return <p className="catalogo-estado catalogo-error">{error}</p>;
 
   const productosFiltrados = categoriaFiltro

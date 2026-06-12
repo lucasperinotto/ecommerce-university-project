@@ -58,17 +58,28 @@ function CartPage() {
               <div className="carrito-item-controles">
                 <button
                   className="carrito-cantidad-btn"
-                  onClick={() => actualizarCantidad(item._id, item.cantidad - 1)}
+                  onClick={() => {
+                    if (item.cantidad === 1) {
+                      confirmar(
+                        `¿Eliminás "${item.nombre}" del carrito?`,
+                        () => eliminarItem(item._id)
+                      );
+                    } else {
+                      actualizarCantidad(item._id, item.cantidad - 1);
+                    }
+                  }}
                 >
                   −
                 </button>
                 <span className="carrito-cantidad">{item.cantidad}</span>
-                <button
-                  className="carrito-cantidad-btn"
-                  onClick={() => actualizarCantidad(item._id, item.cantidad + 1)}
-                >
-                  +
-                </button>
+                {(item.stock == null || item.cantidad < item.stock) && (
+                  <button
+                    className="carrito-cantidad-btn"
+                    onClick={() => actualizarCantidad(item._id, item.cantidad + 1)}
+                  >
+                    +
+                  </button>
+                )}
               </div>
               <p className="carrito-item-subtotal">
                 ${Number(item.precio * item.cantidad).toLocaleString('es-AR')}
@@ -93,10 +104,9 @@ function CartPage() {
           <h2>Resumen</h2>
           {items.map((item) => (
             <div key={item._id} className="carrito-resumen-fila">
-              <span className="carrito-resumen-item-nombre">
-                {item.nombre} <span className="carrito-resumen-item-qty">× {item.cantidad}</span>
-              </span>
-              <span>${Number(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+              <span className="carrito-resumen-item-nombre">{item.nombre}</span>
+              <span className="carrito-resumen-item-qty">× {item.cantidad}</span>
+              <span className="carrito-resumen-item-precio">${Number(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
             </div>
           ))}
           <div className="carrito-resumen-fila carrito-resumen-total">
