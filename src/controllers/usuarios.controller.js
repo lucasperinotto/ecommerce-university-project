@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const Usuario = require('../models/Usuario');
 
 // Endpoint "Obtener todos los Usuarios"
@@ -25,8 +26,8 @@ const obtenerUsuarioPorId = async (req, res) => {
 
 // Endpoint "Crear Usuario"
 const crearUsuario = async (req, res) => {
-    const {nombre, apellido, mail, contrasena} = req.body;
-    if (!nombre || !apellido || !mail || !contrasena) {
+    const {nombre, apellido, mail, contrasena, confirmar} = req.body;
+    if (!nombre || !apellido || !mail || !contrasena || !confirmar) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
@@ -34,16 +35,27 @@ const crearUsuario = async (req, res) => {
         return res.status(400).json({ error: 'Ingrese un mail válido.' });
     }
 
+    const usuario = await Usuario.findOne({ mail });
+    if (usuario) {
+        return res.status(401).json({ error: 'El correo electrónico ingresado ya está en uso.' });
+    }
+
     if (contrasena.length < 6) {
         return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
     }
 
+    if (contrasena != confirmar) {
+        return res.status(400).json({ error: 'La contraseñas no coinciden.' });
+    }
+
     try {
+        hash = await bcrypt.hash(contrasena, 12);
+
         const nuevoUsuario = new Usuario({
         nombre,
         apellido,
         mail,
-        contrasena
+        contrasena: hash
     });
         await nuevoUsuario.save();
         res.status(201).json(nuevoUsuario);

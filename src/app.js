@@ -7,6 +7,7 @@ const productosRoutes = require('./routes/productos.routes');
 const ordenesRoutes = require('./routes/ordenes.routes');
 const usuariosRoutes = require('./routes/usuarios.routes');
 const carritosRoutes = require('./routes/carrito.routes');
+const authRoutes = require('./routes/auth.routes');
 
 const app = express();
 app.use('/images', express.static(path.join(__dirname, './client/public/images')));
@@ -20,5 +21,6 @@ app.use('/ordenes', ordenesRoutes);
 app.use('/productos', productosRoutes);
 app.use('/usuarios', usuariosRoutes);
 app.use('/carrito', carritosRoutes);
+app.use('/auth', authRoutes);
 
 module.exports = app;

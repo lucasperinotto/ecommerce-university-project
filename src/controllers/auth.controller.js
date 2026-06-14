@@ -1,17 +1,19 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
 
 // Endpoint Login
 const login = async (req, res) => {
-    const { email, contrasena } = req.body;
+    const { mail, contrasena } = req.body;
 
-    if (!email || !contrasena) {
-        return res.status(400).json({ error: 'El email y la contraseña son obligatorios.' });
+    if (!mail || !contrasena) {
+        return res.status(400).json({ error: 'El mail y la contraseña son obligatorios.' });
     }
 
     try {
-        const usuario = await Usuario.findOne({ email });
+        const usuario = await Usuario.findOne({ mail });
         if (!usuario) {
-            return res.status(401).json({ error: 'Credenciales inválidas.' });
+            return res.status(401).json({ error: 'El correo electrónico ingresado no tiene un usuario asociado.' });
         }
 
         const igual = await bcrypt.compare(contrasena, usuario.contrasena);
@@ -22,7 +24,7 @@ const login = async (req, res) => {
         const payload = { id: usuario._id.toString(), rol: usuario.rol };
         const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1h'});
 
-        return res.json({ token });
+        return res.json({ token, usuario });
     } catch (err) {
         console.error('Error en login', err);
         res.status(500).json({ error: 'Error interno' });

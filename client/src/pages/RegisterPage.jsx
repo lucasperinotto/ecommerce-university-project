@@ -23,18 +23,14 @@ function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    if (form.contrasena !== form.confirmar) {
-      setError('Las contraseñas no coinciden.');
-      return;
-    }
     setCargando(true);
     try {
-      const { nombre, apellido, mail, contrasena } = form;
-      await register({ nombre, apellido, mail, contrasena });
+      const { nombre, apellido, mail, contrasena, confirmar } = form;
+      await register(form);
       showToast(`¡Bienvenida, ${nombre}! Tu cuenta fue creada con éxito.`);
       navigate('/');
     } catch (err) {
+      console.log(err);
       setError(err.response?.data?.error || 'Error al registrarse.');
     } finally {
       setCargando(false);

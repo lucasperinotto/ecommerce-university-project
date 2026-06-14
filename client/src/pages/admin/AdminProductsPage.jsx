@@ -112,7 +112,7 @@ function AdminProductsPage() {
       await restaurarProducto(id);
       await fetchProductos();
     } catch {
-      alert('Error al restaurar el producto. El backend aún no implementa este endpoint.');
+      alert('Error al restaurar el producto.');
     }
   };
 

@@ -21,10 +21,12 @@ function LoginPage() {
     setError('');
     setCargando(true);
     try {
-      const data = await login(form.mail, form.contrasena);
+      const { mail, constrasena } = form;
+      const data = await login(form);
       showToast(`¡Bienvenida de vuelta, ${data.usuario?.nombre || ''}!`);
       navigate(destino, { replace: true });
     } catch (err) {
+      console.log(err);
       setError(err.response?.data?.error || 'Error al iniciar sesión.');
     } finally {
       setCargando(false);

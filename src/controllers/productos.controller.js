@@ -120,6 +120,24 @@ const bajaLogicaProducto = async (req, res) => {
     }
 }
 
+// Endpoint "Restaurar Producto"
+const restaurarProducto = async (req, res) => {
+    try {
+        const producto = await Producto.findById(req.params.id);
+        if (!producto) {
+            return res.status(404).json({ error: 'Producto no encontrado.' });
+        }
+        producto.estado = "activo";
+        producto.cantidad = 1;
+        await producto.save();
+        res.json(producto);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al restaurar el producto.' });
+    }
+}
+
+
+
 const ajustarStock = async (req, res) => {
     try {
         const { delta } = req.body;
@@ -144,5 +162,6 @@ module.exports = {
     crearProducto,
     actualizarProducto,
     bajaLogicaProducto,
+    restaurarProducto,
     ajustarStock
 }
