@@ -15,7 +15,7 @@ function ForgotPasswordPage() {
     setCargando(true);
     try {
       await forgotPassword(mail);
-      setMensaje('Si el correo existe, recibirás un enlace para restablecer tu contraseña.');
+      setMensaje('Se enviará un enlace de recuperación al correo electrónico ingresado.');
     } catch (err) {
       setError(err.response?.data?.error || 'Error al enviar el correo.');
     } finally {

@@ -71,7 +71,7 @@ function AdminUsersPage() {
       await restoreUser(id);
       await fetchUsuarios();
     } catch {
-      alert('Error al restaurar el usuario. El backend aún no implementa este endpoint.');
+      alert('Error al restaurar el usuario.');
     }
   };
 
