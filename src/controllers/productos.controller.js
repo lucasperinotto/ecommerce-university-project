@@ -136,8 +136,6 @@ const restaurarProducto = async (req, res) => {
     }
 }
 
-
-
 const ajustarStock = async (req, res) => {
     try {
         const { delta } = req.body;

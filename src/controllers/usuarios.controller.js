@@ -87,6 +87,32 @@ const actualizarUsuario = async (req, res) => {
     }
 }
 
+// Endpoint "Agregar Direccion de Usuario"
+const agregarDireccion = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.'});
+        }
+
+        const {calle, numero, ciudad, provincia, codigoPostal} = req.body;
+        if (!calle || !numero || !ciudad || !provincia || !codigoPostal) {
+            return res.status(400).json({ error: 'Faltan campos requeridos.' });
+        }
+
+        usuario.direcciones.calle = calle;
+        usuario.direcciones.numero = numero;
+        usuario.direcciones.ciudad = ciudad;
+        usuario.direcciones.provincia = provincia;
+        usuario.direcciones.codigoPostal = codigoPostal;
+
+        await usuario.save();
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al agregar dirección.' });
+    }
+}
+
 // Endpoint "Baja Logica de Usuario"
 const bajaLogicaUsuario = async (req, res) => {
     try {
@@ -103,10 +129,28 @@ const bajaLogicaUsuario = async (req, res) => {
     }
 }
 
+// Endpoint "Restaurar Usuario"
+const restaurarUsuario = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.'});
+        }
+
+        usuario.estado = "activo";
+        await usuario.save();
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al restaurar el usuario.' });
+    }
+}
+
 module.exports = {
     obtenerUsuarios,
     obtenerUsuarioPorId,
     crearUsuario,
     actualizarUsuario,
-    bajaLogicaUsuario
+    agregarDireccion,
+    bajaLogicaUsuario,
+    restaurarUsuario
 }
