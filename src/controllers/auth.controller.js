@@ -11,7 +11,6 @@ const {
 // Endpoint Login
 const login = async (req, res) => {
     const { mail, contrasena } = req.body;
-
     if (!mail || !contrasena) {
         return res.status(400).json({ error: 'El mail y la contraseña son obligatorios.' });
     }
@@ -40,7 +39,6 @@ const login = async (req, res) => {
 // Endpoint Forgot Password
 const forgotPassword = async (req, res) => {
     const { mail } = req.body;
-
     if (!mail) {
         return res.status(400).json({ error: 'Ingrese un correo electrónico válido.' });
     }
@@ -78,7 +76,55 @@ const forgotPassword = async (req, res) => {
     }
 }
 
+// Endpoint Reset Password
+const resetPassword = async (req, res) => {
+    const { nuevaContrasena, confirmar } = req.body;
+    if (!nuevaContrasena || !confirmar) {
+        return res.status(400).json({ error: 'Faltan campos requeridos.' });
+    }
+
+    if (nuevaContrasena.length < 6) {
+        return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
+    }
+
+    if (nuevaContrasena != confirmar) {
+        return res.status(400).json({ error: 'La contraseñas no coinciden.' });
+    }
+
+    const { token } = req.params;
+    if (!token) {
+        return res.status(400).json({ error: 'Token requerido.' });
+    }
+
+    const tokenHash = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+    try {
+        const usuario = await Usuario.findOne({
+            resetPasswordToken: tokenHash,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+
+        if (!usuario) {
+            return res.status(400).json({ error: 'El token ya no es válido.'});
+        }
+
+        const hash = await bcrypt.hash(nuevaContrasena, 12);
+        usuario.contrasena = hash;
+        usuario.resetPasswordToken = undefined;
+        usuario.resetPasswordExpire = undefined;
+
+        await usuario.save();
+        res.status(201).json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al cambiar contraseña.' });
+    }
+}
+
 module.exports = {
     login, 
-    forgotPassword 
+    forgotPassword,
+    resetPassword 
 };

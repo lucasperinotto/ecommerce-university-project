@@ -24,7 +24,7 @@ function ResetPasswordPage() {
     }
     setCargando(true);
     try {
-      await resetPassword(token, form.nuevaContrasena);
+      await resetPassword(form.nuevaContrasena);
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.error || 'El enlace es inválido o expiró.');

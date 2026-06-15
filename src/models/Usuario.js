@@ -17,8 +17,8 @@ const usuarioSchema = new mongoose.Schema({
     rol: { type: String, enum: ['cliente', 'admin'], default: 'cliente' },
     estado: { type: String, enum: ['activo', 'inactivo'], default: 'activo' },
     
-    resetPasswordToken: { type: String },
-    resetPasswordExpires: { type: Date }
+    resetPasswordToken: { type: String, default: undefined },
+    resetPasswordExpires: { type: Date, default: undefined }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Usuario', usuarioSchema);
