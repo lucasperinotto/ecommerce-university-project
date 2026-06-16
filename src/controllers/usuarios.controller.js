@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
 
 // Endpoint "Obtener todos los Usuarios"
@@ -49,16 +50,24 @@ const crearUsuario = async (req, res) => {
     }
 
     try {
-        hash = await bcrypt.hash(contrasena, 12);
+        const hash = await bcrypt.hash(contrasena, 12);
 
         const nuevoUsuario = new Usuario({
         nombre,
         apellido,
         mail,
-        contrasena: hash
+        contrasena: hash,
+        rol: rol || 'cliente'
     });
+
         await nuevoUsuario.save();
-        res.status(201).json(nuevoUsuario);
+
+        const usuarioResponse = nuevoUsuario.toObject();
+        delete usuarioResponse.contrasena;
+
+        const payload = { id: usuario._id.toString(), rol: usuario.rol };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1h'});
+        return res.status(201).json({ token, usuarioResponse });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el usuario.' });
     }

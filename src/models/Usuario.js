@@ -14,7 +14,7 @@ const usuarioSchema = new mongoose.Schema({
             codigoPostal: { type: String, default: '' }
         }
     ],
-    rol: { type: String, enum: ['cliente', 'admin'], default: 'cliente' },
+    rol: { type: String, enum: ['cliente', 'admin']},
     estado: { type: String, enum: ['activo', 'inactivo'], default: 'activo' },
     
     resetPasswordToken: { type: String, default: undefined },
