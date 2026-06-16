@@ -17,6 +17,7 @@ function ForgotPasswordPage() {
       await forgotPassword(mail);
       setMensaje('Se enviará un enlace de recuperación al correo electrónico ingresado.');
     } catch (err) {
+      console.log(err);
       setError(err.response?.data?.error || 'Error al enviar el correo.');
     } finally {
       setCargando(false);

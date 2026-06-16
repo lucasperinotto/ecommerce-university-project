@@ -57,20 +57,19 @@ const forgotPassword = async (req, res) => {
             .digest('hex');
 
         usuario.resetPasswordToken = tokenHash;
-        usuario.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
-
+        usuario.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
         await usuario.save();
 
-        const resetURL = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+        const resetLink = `${process.env.FRONTEND_URL}/restablecer-contrasena/${token}`;
 
         await sendPasswordResetEmail({
             to: usuario.mail,
-            resetURL
+            resetLink
         });
 
         return res.status(200).json({mensaje: 'Se enviará un enlace de recuperación al correo electrónico ingresado.'});
     } catch (err) {
-        console.error('Error al recuperar contraseña.', err);
+        console.error('Error al enviar mail de recuperación.', err);
         console.log(err);
         res.status(500).json({ error: 'Error interno.' });
     }
@@ -104,8 +103,8 @@ const resetPassword = async (req, res) => {
     try {
         const usuario = await Usuario.findOne({
             resetPasswordToken: tokenHash,
-            resetPasswordExpire: { $gt: Date.now() }
-        });
+            resetPasswordExpires: { $gt: Date.now() }
+        }); 
 
         if (!usuario) {
             return res.status(400).json({ error: 'El token ya no es válido.'});
@@ -114,7 +113,7 @@ const resetPassword = async (req, res) => {
         const hash = await bcrypt.hash(nuevaContrasena, 12);
         usuario.contrasena = hash;
         usuario.resetPasswordToken = undefined;
-        usuario.resetPasswordExpire = undefined;
+        usuario.resetPasswordExpires = undefined;
 
         await usuario.save();
         res.status(201).json(usuario);

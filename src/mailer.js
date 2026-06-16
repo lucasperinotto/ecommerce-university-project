@@ -21,31 +21,33 @@ const createTransporter = () => {
 };
 
 const sendPasswordResetEmail = async ({ to, resetLink }) => {
-  const transporter = createTransporter();
-  const from = process.env.MAIL_FROM || process.env.SMTP_USER;
+    const transporter = createTransporter();
+    await transporter.verify();
 
-  return transporter.sendMail({
-    from,
-    to,
-    subject: 'Recuperacion de contraseña',
-    text: [
-      'Recibimos una solicitud para recuperar tu contraseña.',
-      '',
-      `Ingresa al siguiente enlace para crear una nueva contraseña: ${resetLink}`,
-      '',
-      'Este enlace vence en 15 minutos y solo puede usarse una vez.',
-      '',
-      'Si no solicitaste este cambio, podes ignorar este mensaje.'
-    ].join('\n'),
-    html: `
-      <p>Recibimos una solicitud para recuperar tu contraseña.</p>
-      <p>
-        <a href="${resetLink}">Crear nueva contraseña</a>
-      </p>
-      <p>Este enlace vence en 15 minutos y solo puede usarse una vez.</p>
-      <p>Si no solicitaste este cambio, podes ignorar este mensaje.</p>
-    `
-  });
+    const from = process.env.MAIL_FROM || process.env.SMTP_USER;
+
+    return transporter.sendMail({
+      from,
+      to,
+      subject: 'Recuperacion de contraseña',
+      text: [
+        'Recibimos una solicitud para recuperar tu contraseña.',
+        '',
+        `Ingresa al siguiente enlace para crear una nueva contraseña: ${resetLink}`,
+        '',
+        'Este enlace vence en 15 minutos y solo puede usarse una vez.',
+        '',
+        'Si no solicitaste este cambio, podes ignorar este mensaje.'
+      ].join('\n'),
+      html: `
+        <p>Recibimos una solicitud para recuperar tu contraseña.</p>
+        <p>
+          <a href="${resetLink}">Crear nueva contraseña</a>
+        </p>
+        <p>Este enlace vence en 15 minutos y solo puede usarse una vez.</p>
+        <p>Si no solicitaste este cambio, podes ignorar este mensaje.</p>
+      `
+    });
 };
 
 module.exports = {

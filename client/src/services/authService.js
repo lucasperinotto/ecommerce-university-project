@@ -9,7 +9,7 @@ export const register = ( nuevoUsuario ) =>
   axios.post(`${API}/usuarios/`, nuevoUsuario);
 
 export const forgotPassword = ( mail ) =>
-  axios.post(`${API}/auth/forgot-password`, mail);
+  axios.post(`${API}/auth/forgot-password`, { mail });
 
-export const resetPassword = ( nuevaContrasena ) =>
-  axios.post(`${API}/auth/reset-password/:token`, nuevaContrasena);
+export const resetPassword = ( token, nuevaContrasena, confirmar ) =>
+  axios.post(`${API}/auth/reset-password/${token}`, { nuevaContrasena, confirmar });
