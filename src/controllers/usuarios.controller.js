@@ -27,7 +27,7 @@ const obtenerUsuarioPorId = async (req, res) => {
 
 // Endpoint "Crear Usuario"
 const crearUsuario = async (req, res) => {
-    const {nombre, apellido, mail, contrasena, confirmar} = req.body;
+    const {nombre, apellido, mail, contrasena, confirmar, rol} = req.body;
     if (!nombre || !apellido || !mail || !contrasena || !confirmar) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
@@ -65,7 +65,7 @@ const crearUsuario = async (req, res) => {
         const usuarioResponse = nuevoUsuario.toObject();
         delete usuarioResponse.contrasena;
 
-        const payload = { id: usuario._id.toString(), rol: usuario.rol };
+        const payload = { id: nuevoUsuario._id.toString(), rol: nuevoUsuario.rol };
         const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1h'});
         return res.status(201).json({ token, usuarioResponse });
     } catch (error) {
