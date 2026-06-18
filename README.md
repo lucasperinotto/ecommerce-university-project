@@ -203,31 +203,22 @@ Errores: `400`: contraseñas no coinciden / menor a 6 caracteres · `400` token 
 Respuesta: `200`: array de productos
 
 **GET `/productos/:id`**
-Respuesta: `200`: producto
-Errores: `404`: producto no encontrado
+Respuesta: `200`: producto | Errores: `404`: producto no encontrado
 
 **POST `/productos`**
-Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }`
-Respuesta: `201`: producto creado
-Errores: `404`: campos faltantes / ingresos no válidos
+Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }` | Respuesta: `201`: producto creado | Errores: `404`: campos faltantes / ingresos no válidos
 
 **PUT `/productos/:id`**
-Body: Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }`
-Respuesta: `200`: producto actualizado
-Errores: `404`: producto no encontrado / campos faltantes / ingresos no válidos
+Body: Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }` | Respuesta: `200`: producto actualizado | Errores: `404`: producto no encontrado / campos faltantes / ingresos no válidos
 
 **DELETE `/productos/:id`**
-Respuesta: `200`: baja lógica del producto (`estado: "inactivo"`)
-Errores: `404`: producto no encontrado
+Respuesta: `200`: baja lógica del producto (`estado: "inactivo"`) | Errores: `404`: producto no encontrado
 
 **PATCH `/productos/:id/restore`**
-Respuesta: `200`: alta lógica de un producto inactivo (`estado: "activo"`)
-Errores: `404`: producto no encontrado
+Respuesta: `200`: alta lógica de un producto inactivo (`estado: "activo"`) | Errores: `404`: producto no encontrado
 
 **PATCH `/productos/:id/stock`**
-Body: `{ "delta": number }` (positivo suma stock, negativo resta)
-Respuesta: `200`: producto con `cantidad` actualizada
-Errores: `400`: ingreso no válido / stock insuficiente · `404`: producto no encontrado
+Body: `{ "delta": number }` (positivo suma stock, negativo resta) | Respuesta: `200`: producto con `cantidad` actualizada | Errores: `400`: ingreso no válido / stock insuficiente · `404`: producto no encontrado
 
 ---
 
@@ -247,30 +238,22 @@ Errores: `400`: ingreso no válido / stock insuficiente · `404`: producto no en
 Respuesta: `200`: array de usuarios
 
 **GET `/usuarios/:id`**
-Respuesta: `200`: usuario · `404`: no encontrado
+Respuesta: `200`: usuario | Errores: `404`: no encontrado
 
 **POST `/usuarios`**
-Body: `{ "nombre", "apellido", "mail", "contrasena", "confirmar", "rol" }`
-Respuesta: `201`: nuevo usuario `{ "token": "jwt", "usuarioResponse": { ...usuario sin contraseña } }`
-Errores: `400`: campos faltantes / mail inválido / contraseña menor a seis caracteres o no coincide · `401`: mail ya registrado y activo
+Body: `{ "nombre", "apellido", "mail", "contrasena", "confirmar", "rol" }` | Respuesta: `201`: nuevo usuario `{ "token": "jwt", "usuarioResponse": { ...usuario sin contraseña } }` | Errores: `400`: campos faltantes / mail inválido / contraseña menor a seis caracteres o no coincide · `401`: mail ya registrado y activo
 
 **PUT `/usuarios/:id`**
-Body: `{ "nombre", "apellido" }`
-Respuesta: `200`: usuario actualizado
-Errores: `400`: campos faltantes · `403`: no autorizado · `404`: usuario no encontrado
+Body: `{ "nombre", "apellido" }` | Respuesta: `200`: usuario actualizado | Errores: `400`: campos faltantes · `403`: no autorizado · `404`: usuario no encontrado
 
 **PATCH `/usuarios/:id/address`**
-Body: `{ "direcciones": [{ "calle", "numero", "ciudad", "provincia", "codigoPostal" }] }`
-Respuesta: `200`: usuario con domicilios actualizados
-Errores: `403`: no autorizado · `404`: usuario no encontrado
+Body: `{ "direcciones": [{ "calle", "numero", "ciudad", "provincia", "codigoPostal" }] }` | Respuesta: `200`: usuario con domicilios actualizados | Errores: `403`: no autorizado · `404`: usuario no encontrado
 
 **DELETE `/usuarios/:id`**
-Respuesta: `200`: baja lógica del usuario (`estado: "inactivo"`)
-Errores: `404`: usuario no encontrado
+Respuesta: `200`: baja lógica del usuario (`estado: "inactivo"`) | Errores: `404`: usuario no encontrado
 
 **PATCH `/usuarios/:id/restore`**
-Respuesta: `200`: alta lógica del usuario (`estado: "activo"`)
-Errores: `404`: usuario no encontrado
+Respuesta: `200`: alta lógica del usuario (`estado: "activo"`) | Errores: `404`: usuario no encontrado
 
 ---
 
@@ -294,29 +277,22 @@ Errores: `404`: usuario no encontrado
 Respuesta: `200`: array de carritos
 
 **GET `/carrito/:id`**
-Respuesta: `200`: carrito · `404`: no encontrado
+Respuesta: `200`: carrito | Errores: `404`: no encontrado
 
 **POST `/carrito/:id`**
-Respuesta: `201`: nuevo carrito `{ "idUsuario", "items": [] }`
-Errores: `400`: carrito ya existente
+Respuesta: `201`: nuevo carrito `{ "idUsuario", "items": [] }` | Errores: `400`: carrito ya existente
 
 **POST `/carrito/:id/items`**
-Body: `{ "idProducto", "nombre", "precio": number, "cantidad": number }`
-Respuesta: `201`: carrito actualizado (si el producto ya existía en el carrito, suma la cantidad)
-Errores: `400`: campos faltantes / ingresos no válidos / carrito no encontrado
+Body: `{ "idProducto", "nombre", "precio": number, "cantidad": number }` | Respuesta: `201`: carrito actualizado (si el producto ya existía en el carrito, suma la cantidad) | Errores: `400`: campos faltantes / ingresos no válidos / carrito no encontrado
 
 **PUT `/carrito/:id/items/:idProducto`**
-Body: `{ "cantidad": number }`
-Respuesta: `200`: carrito actualizado
-Errores: `404`: ingreso no válido / carrito no encontrado / producto no está en el carrito
+Body: `{ "cantidad": number }` | Respuesta: `200`: carrito actualizado | Errores: `404`: ingreso no válido / carrito no encontrado / producto no está en el carrito
 
 **DELETE `/carrito/:id/items/:idProducto`** 
-Respuesta: `200`: carrito sin ese ítem
-Errores: `404`: carrito no encontrado / producto no está en el carrito
+Respuesta: `200`: carrito sin ese ítem | Errores: `404`: carrito no encontrado / producto no está en el carrito
 
 **DELETE `/carrito/:id/items`** 
-Respuesta: `200`: carrito con `items: []`
-Errores: `404`: carrito no encontrado
+Respuesta: `200`: carrito con `items: []` | Errores: `404`: carrito no encontrado
 
 ---
 
@@ -346,9 +322,7 @@ Body:
   "direccionEnvio": { "calle", "numero", "ciudad", "provincia", "codigoPostal" }
 }
 ```
-`direccionEnvio` es obligatorio solo si `tipoEntrega === "envio"`.
-Respuesta `201`: orden creada con `estado: "pendiente de pago"`. El stock se descuenta desde el frontend al confirmar (`PATCH /productos/:id/stock`).
-Errores: `400`: campos faltantes / ingresos no válidos / producto no disponible / sin stock · `404`: usuario no encontrado
+`direccionEnvio` es obligatorio solo si `tipoEntrega === "envio"`. | Respuesta `201`: orden creada con `estado: "pendiente de pago"`. El stock se descuenta desde el frontend al confirmar (`PATCH /productos/:id/stock`). | Errores: `400`: campos faltantes / ingresos no válidos / producto no disponible / sin stock · `404`: usuario no encontrado
 
 ---
 
