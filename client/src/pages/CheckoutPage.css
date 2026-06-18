@@ -317,7 +317,7 @@
 }
 
 .campo-requerido {
-  color: #c0392b;
+  color: var(--rojo);
 }
 
 .checkout-nota-requerido {

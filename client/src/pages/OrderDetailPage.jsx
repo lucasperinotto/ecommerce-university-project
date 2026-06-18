@@ -13,12 +13,12 @@ function OrderDetailPage() {
     return null;
   }
 
-  const { _id, estado, createdAt, metodoPago, direccionEnvio, items, precioTotal } = orden;
+  const { _id, estado, createdAt, metodoPago, tipoEntrega, direccionEnvio, items, precioTotal } = orden;
 
   return (
     <main className="orden-detalle">
       <button className="orden-detalle-volver" onClick={() => navigate('/mis-ordenes')}>
-        ← Volver a mis órdenes
+        ← Volver a mis pedidos
       </button>
 
       <div className="orden-detalle-header">
@@ -54,15 +54,14 @@ function OrderDetailPage() {
 
         <div className="orden-detalle-info">
           <div className="orden-detalle-seccion">
-            <h2>Dirección de envío</h2>
-            {direccionEnvio ? (
+            <h2>Entrega</h2>
+            <p>{tipoEntrega === 'envio' ? 'Envío a domicilio' : 'Retiro en local'}</p>
+            {tipoEntrega === 'envio' && direccionEnvio && (
               <p>
                 {direccionEnvio.calle} {direccionEnvio.numero},{' '}
                 {direccionEnvio.ciudad}, {direccionEnvio.provincia}{' '}
                 ({direccionEnvio.codigoPostal})
               </p>
-            ) : (
-              <p className="orden-detalle-sin-dato">—</p>
             )}
           </div>
           <div className="orden-detalle-seccion">

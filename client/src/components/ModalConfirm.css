@@ -46,11 +46,12 @@
   font-size: 0.875rem;
   font-family: inherit;
   letter-spacing: 0.05em;
-  transition: background 0.2s, color 0.2s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
 .modal-btn-cancelar:hover {
-  background: var(--gris-claro);
+  border-color: var(--verde);
+  background: var(--verde-palido);
   color: var(--gris-oscuro);
 }
 

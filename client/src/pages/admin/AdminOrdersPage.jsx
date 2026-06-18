@@ -53,7 +53,11 @@ function AdminOrdersPage() {
               {ordenes.map((o) => (
                 <tr key={o._id}>
                   <td className="orden-id-col">#{o._id?.slice(-8)}</td>
-                  <td>{o.idUsuario || o.usuario || '—'}</td>
+                  <td>
+                    {o.idUsuario?.nombre
+                      ? `${o.idUsuario.nombre} ${o.idUsuario.apellido || ''}`.trim()
+                      : o.idUsuario || o.usuario || '—'}
+                  </td>
                   <td>{o.items?.length ?? 0} item{o.items?.length !== 1 ? 's' : ''}</td>
                   <td>${Number(o.precioTotal).toLocaleString('es-AR')}</td>
                   <td>{o.metodoPago}</td>
@@ -63,8 +67,8 @@ function AdminOrdersPage() {
                     </span>
                   </td>
                   <td>
-                    {o.fechaCreacion
-                      ? new Date(o.fechaCreacion).toLocaleDateString('es-AR')
+                    {o.createdAt
+                      ? new Date(o.createdAt).toLocaleDateString('es-AR')
                       : '—'}
                   </td>
                 </tr>

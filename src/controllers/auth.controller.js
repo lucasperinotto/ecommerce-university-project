@@ -31,7 +31,7 @@ const login = async (req, res) => {
         }
 
         const payload = { id: usuario._id.toString(), rol: usuario.rol };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '24h'});
 
         return res.json({ token, usuario });
     } catch (err) {

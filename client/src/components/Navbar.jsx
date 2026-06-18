@@ -46,16 +46,18 @@ function Navbar() {
 
         {/* Derecha — carrito + auth */}
         <div className="navbar-derecha">
-          <Link to="/carrito" className="navbar-carrito" title="Carrito">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 01-8 0"/>
-            </svg>
-            {cantidadTotal > 0 && (
-              <span className="navbar-carrito-badge">{cantidadTotal}</span>
-            )}
-          </Link>
+          {usuario?.rol !== 'admin' && (
+            <Link to="/carrito" className="navbar-carrito" title="Carrito">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+              {cantidadTotal > 0 && (
+                <span className="navbar-carrito-badge">{cantidadTotal}</span>
+              )}
+            </Link>
+          )}
 
           {usuario ? (
             <div className="navbar-usuario">
@@ -72,7 +74,9 @@ function Navbar() {
               {dropdownAbierto && (
                 <div className="navbar-dropdown">
                   <Link to="/perfil" onClick={() => setDropdownAbierto(false)}>Mi perfil</Link>
-                  <Link to="/mis-ordenes" onClick={() => setDropdownAbierto(false)}>Mis órdenes</Link>
+                  {usuario.rol !== 'admin' && (
+                    <Link to="/mis-ordenes" onClick={() => setDropdownAbierto(false)}>Mis pedidos</Link>
+                  )}
                   {usuario.rol === 'admin' && (
                     <>
                       <div className="navbar-dropdown-divider" />
@@ -105,7 +109,7 @@ function Navbar() {
               Inicio
             </Link>
             <div className="navbar-menu-seccion">
-              <Link to="/catalogo" className="navbar-menu-link" onClick={cerrarHamburguesa}>
+              <Link to="/catalogo" className="navbar-menu-link navbar-menu-link--con-borde" onClick={cerrarHamburguesa}>
                 Catálogo
               </Link>
               <div className="navbar-menu-categorias">
@@ -121,6 +125,19 @@ function Navbar() {
                 ))}
               </div>
             </div>
+            {usuario && (
+              <div className="navbar-menu-seccion">
+                <span className="navbar-menu-label">Mi cuenta</span>
+                <Link to="/perfil" className="navbar-menu-categoria" onClick={cerrarHamburguesa}>
+                  Mi perfil
+                </Link>
+                {usuario.rol !== 'admin' && (
+                  <Link to="/mis-ordenes" className="navbar-menu-categoria" onClick={cerrarHamburguesa}>
+                    Mis pedidos
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -170,7 +170,7 @@
 }
 
 .detalle-error {
-  color: #c0392b;
+  color: var(--rojo);
 }
 
 @media (max-width: 768px) {

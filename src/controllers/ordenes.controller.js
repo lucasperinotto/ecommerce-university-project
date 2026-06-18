@@ -1,11 +1,12 @@
 const Orden = require('../models/Orden');
 const Usuario = require('../models/Usuario');
+const Producto = require('../models/Producto');
 const { isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 
 // Endpoint "Obtener Ordenes"
 const obtenerOrdenes = async (req, res) => {
     try {
-        const ordenes = await Orden.find().select("-__v");
+        const ordenes = await Orden.find().select("-__v").populate('idUsuario', 'nombre apellido mail');
         res.json(ordenes);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las órdenes.' });
@@ -57,9 +58,20 @@ const generarOrden = async (req, res) => {
         return res.status(400).json({ error: 'Método de pago inválido.' });
     }
 
+    for (const item of items) {
+        const producto = await Producto.findById(item.idProducto);
+        if (!producto || producto.estado === 'inactivo') {
+            return res.status(400).json({ error: `El producto "${item.nombre}" ya no está disponible.` });
+        }
+        if (producto.cantidad < item.cantidad) {
+            return res.status(400).json({ error: `No hay suficiente stock de "${item.nombre}". Disponible: ${producto.cantidad}.` });
+        }
+    }
+
     try {
         const nuevaOrden = new Orden({
             idUsuario,
+            tipoEntrega: tipoEntrega === 'envio' ? 'envio' : 'retiro',
             direccionEnvio: tipoEntrega === 'envio' ? direccionEnvio : undefined,
             items,
             precioTotal,

@@ -32,8 +32,8 @@
 }
 
 .carrito-vaciar:hover {
-  border-color: #c0392b;
-  color: #c0392b;
+  border-color: var(--rojo);
+  color: var(--rojo);
 }
 
 .carrito-vaciar-resumen {
@@ -150,7 +150,7 @@
 }
 
 .carrito-item-eliminar:hover {
-  color: #c0392b;
+  color: var(--rojo);
 }
 
 .carrito-resumen {

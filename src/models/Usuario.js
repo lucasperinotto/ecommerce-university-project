@@ -9,6 +9,8 @@ const usuarioSchema = new mongoose.Schema({
         {
             calle: { type: String, default: '' },
             numero: { type: Number, default: '' },
+            piso: { type: String, default: '' },
+            depto: { type: String, default: '' },
             ciudad: { type: String, default: '' },
             provincia: { type: String, default: '' },
             codigoPostal: { type: String, default: '' }

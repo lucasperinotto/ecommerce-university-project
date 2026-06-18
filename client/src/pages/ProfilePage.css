@@ -89,11 +89,12 @@
   font-size: 0.82rem;
   font-family: inherit;
   letter-spacing: 0.05em;
-  transition: border-color 0.2s, color 0.2s;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
 
 .perfil-btn-editar:hover {
-  border-color: var(--gris-medio);
+  border-color: var(--verde);
+  background: var(--verde-palido);
   color: var(--gris-oscuro);
 }
 
@@ -162,11 +163,13 @@
   border-radius: 6px;
   font-size: 0.9rem;
   font-family: inherit;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
 .perfil-btn-cancelar:hover {
-  border-color: var(--gris-medio);
+  border-color: var(--verde);
+  background: var(--verde-palido);
+  color: var(--gris-oscuro);
 }
 
 /* ── Órdenes ── */
@@ -221,29 +224,29 @@
   border-radius: 20px;
 }
 
-.perfil-orden-estado--pendiente {
+.perfil-orden-estado--pendiente-de-pago {
   background: #FFF8E1;
-  color: #856404;
+  color: var(--naranja);
 }
 
-.perfil-orden-estado--en-preparaci\00f3n {
+.perfil-orden-estado--procesando {
   background: #E3F2FD;
   color: #1565C0;
 }
 
 .perfil-orden-estado--enviado {
-  background: var(--verde-palido);
-  color: #2E7D32;
+  background: #e0f2f1;
+  color: #00695c;
 }
 
 .perfil-orden-estado--entregado {
   background: var(--verde-palido);
-  color: #2E7D32;
+  color: var(--verde-oscuro);
 }
 
 .perfil-orden-estado--cancelado {
-  background: #FFEBEE;
-  color: #C62828;
+  background: var(--rojo-claro);
+  color: var(--rojo);
 }
 
 .perfil-orden-bottom {
@@ -294,7 +297,7 @@
 }
 
 .campo-requerido {
-  color: #c0392b;
+  color: var(--rojo);
 }
 
 .checkout-nota-requerido {
@@ -337,6 +340,30 @@
   color: var(--gris-medio);
 }
 
+.perfil-dom-acciones {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.perfil-btn-accion {
+  background: none;
+  border: 1px solid var(--gris-claro);
+  color: var(--gris-medio);
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.perfil-btn-accion:hover {
+  border-color: var(--verde);
+  background: var(--verde-palido);
+  color: var(--gris-oscuro);
+}
+
 .perfil-btn-dom-eliminar {
   background: none;
   border: 1px solid var(--gris-claro);
@@ -351,8 +378,8 @@
 }
 
 .perfil-btn-dom-eliminar:hover {
-  border-color: #c62828;
-  color: #c62828;
+  border-color: var(--rojo);
+  color: var(--rojo);
 }
 
 .perfil-form-dom {

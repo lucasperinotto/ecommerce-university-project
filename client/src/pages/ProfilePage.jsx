@@ -23,11 +23,16 @@ function ProfilePage() {
   const [cargandoOrdenes, setCargandoOrdenes] = useState(true);
   const [direcciones, setDirecciones] = useState(usuario?.direcciones || []);
   const [agregandoDom, setAgregandoDom] = useState(false);
+  const [editandoDomIdx, setEditandoDomIdx] = useState(null);
   const [formDom, setFormDom] = useState({ calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '' });
   const [errorDom, setErrorDom] = useState('');
   const [guardandoDom, setGuardandoDom] = useState(false);
 
   useEffect(() => {
+    if (usuario?.rol === 'admin') {
+      setCargandoOrdenes(false);
+      return;
+    }
     const fetchOrdenes = async () => {
       try {
         const { data } = await getMisOrdenes(usuario._id);
@@ -40,7 +45,7 @@ function ProfilePage() {
       }
     };
     fetchOrdenes();
-  }, [usuario._id]);
+  }, [usuario._id, usuario?.rol]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -69,19 +74,36 @@ function ProfilePage() {
     if (name === 'codigoPostal') buscarLocalidadDom(value);
   };
 
-  const handleAgregarDom = async (e) => {
+  const cancelarFormDom = () => {
+    setAgregandoDom(false);
+    setEditandoDomIdx(null);
+    setFormDom({ calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '' });
+  };
+
+  const abrirEditarDom = (idx) => {
+    setEditandoDomIdx(idx);
+    setAgregandoDom(false);
+    setErrorDom('');
+    setFormDom({
+      calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '',
+      ...direcciones[idx],
+    });
+  };
+
+  const handleGuardarDom = async (e) => {
     e.preventDefault();
     setErrorDom('');
     setGuardandoDom(true);
     try {
-      const nuevas = [...direcciones, { ...formDom }];
+      const nuevas = editandoDomIdx !== null
+        ? direcciones.map((d, i) => (i === editandoDomIdx ? { ...formDom } : d))
+        : [...direcciones, { ...formDom }];
       const { data } = await actualizarDirecciones(usuario._id, nuevas);
       const guardadas = data.direcciones || nuevas;
       actualizarUsuario({ direcciones: guardadas });
       setDirecciones(guardadas);
-      setAgregandoDom(false);
-      setFormDom({ calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '' });
-      showToast('Domicilio guardado con éxito.');
+      showToast(editandoDomIdx !== null ? 'Domicilio actualizado con éxito.' : 'Domicilio guardado con éxito.');
+      cancelarFormDom();
     } catch {
       setErrorDom('Error al guardar el domicilio.');
     } finally {
@@ -120,8 +142,8 @@ function ProfilePage() {
 
   const labelEstado = (estado) => {
     const map = {
-      pendiente: 'Pendiente',
-      'en preparación': 'En preparación',
+      'pendiente de pago': 'Pendiente de pago',
+      procesando: 'En preparación',
       enviado: 'Enviado',
       entregado: 'Entregado',
       cancelado: 'Cancelado',
@@ -139,7 +161,7 @@ function ProfilePage() {
           <h1 className="perfil-nombre-completo">
             {usuario?.nombre} {usuario?.apellido}
           </h1>
-          <span className="perfil-rol">{usuario?.rol}</span>
+          {usuario?.rol === 'admin' && <span className="perfil-rol">{usuario?.rol}</span>}
         </div>
       </div>
 
@@ -173,10 +195,12 @@ function ProfilePage() {
                 <span className="perfil-label">Correo electrónico</span>
                 <span className="perfil-valor">{usuario?.mail}</span>
               </div>
-              <div className="perfil-fila">
-                <span className="perfil-label">Rol</span>
-                <span className="perfil-valor perfil-rol-fila">{usuario?.rol}</span>
-              </div>
+              {usuario?.rol === 'admin' && (
+                <div className="perfil-fila">
+                  <span className="perfil-label">Rol</span>
+                  <span className="perfil-valor perfil-rol-fila">{usuario?.rol}</span>
+                </div>
+              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="auth-form perfil-form">
@@ -222,10 +246,11 @@ function ProfilePage() {
         </section>
 
         {/* Mis domicilios */}
+        {usuario?.rol !== 'admin' && (
         <section className="perfil-seccion">
           <div className="perfil-seccion-titulo">
             <h2>Mis domicilios</h2>
-            {!agregandoDom && (
+            {!agregandoDom && editandoDomIdx === null && (
               <button className="perfil-btn-editar" onClick={() => { setAgregandoDom(true); setErrorDom(''); }}>
                 + Agregar
               </button>
@@ -247,15 +272,20 @@ function ProfilePage() {
                   </span>
                   <span className="perfil-dom-sub">{dir.ciudad}, {dir.provincia} — CP {dir.codigoPostal}</span>
                 </div>
-                <button className="perfil-btn-dom-eliminar" onClick={() => handleEliminarDom(idx)}>
-                  Eliminar
-                </button>
+                <div className="perfil-dom-acciones">
+                  <button className="perfil-btn-accion" onClick={() => abrirEditarDom(idx)}>
+                    Editar
+                  </button>
+                  <button className="perfil-btn-dom-eliminar" onClick={() => handleEliminarDom(idx)}>
+                    Eliminar
+                  </button>
+                </div>
               </div>
             ))}
           </div>
 
-          {agregandoDom && (
-            <form onSubmit={handleAgregarDom} className="auth-form perfil-form-dom">
+          {(agregandoDom || editandoDomIdx !== null) && (
+            <form onSubmit={handleGuardarDom} className="auth-form perfil-form-dom">
               <p className="checkout-nota-requerido">
                 Los campos marcados con <span className="campo-requerido">*</span> son obligatorios.
               </p>
@@ -296,17 +326,19 @@ function ProfilePage() {
               {errorDom && <p className="auth-error">{errorDom}</p>}
               <div className="perfil-acciones">
                 <button type="submit" className="auth-btn" disabled={guardandoDom}>
-                  {guardandoDom ? 'Guardando...' : 'Guardar domicilio'}
+                  {guardandoDom ? 'Guardando...' : editandoDomIdx !== null ? 'Guardar cambios' : 'Guardar domicilio'}
                 </button>
-                <button type="button" className="perfil-btn-cancelar" onClick={() => { setAgregandoDom(false); setFormDom({ calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '' }); }}>
+                <button type="button" className="perfil-btn-cancelar" onClick={cancelarFormDom}>
                   Cancelar
                 </button>
               </div>
             </form>
           )}
         </section>
+        )}
 
         {/* Mis compras */}
+        {usuario?.rol !== 'admin' && (
         <section className="perfil-seccion">
           <div className="perfil-seccion-titulo">
             <h2>Mis compras</h2>
@@ -343,8 +375,8 @@ function ProfilePage() {
                   </div>
                   <div className="perfil-orden-bottom">
                     <span className="perfil-orden-fecha">
-                      {orden.fechaCreacion
-                        ? new Date(orden.fechaCreacion).toLocaleDateString('es-AR', {
+                      {orden.createdAt
+                        ? new Date(orden.createdAt).toLocaleDateString('es-AR', {
                             day: '2-digit', month: 'long', year: 'numeric',
                           })
                         : '—'}
@@ -361,6 +393,7 @@ function ProfilePage() {
             </div>
           )}
         </section>
+        )}
 
       </div>
     </main>

@@ -50,6 +50,7 @@ function CheckoutPage() {
   const [tipoEntrega, setTipoEntrega] = useState('retiro');
   const [usarDomFact, setUsarDomFact] = useState(false);
   const [domSeleccionado, setDomSeleccionado] = useState(null);
+  const [domFactSeleccionado, setDomFactSeleccionado] = useState(null);
   const [envio, setEnvio] = useState(envioVacio);
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
@@ -193,7 +194,7 @@ function CheckoutPage() {
 
           <div className="checkout-confirmacion-acciones">
             <Link to="/mis-ordenes" className="auth-btn checkout-btn-ordenes">
-              Ver mis órdenes
+              Ver mis pedidos
             </Link>
             <Link to="/catalogo" className="checkout-btn-seguir">
               Seguir comprando
@@ -266,7 +267,6 @@ function CheckoutPage() {
                   value={facturacion.dni}
                   onChange={handleFact}
                   required
-                  placeholder="Ej: 40123456"
                 />
               </div>
               <div className="form-group">
@@ -280,6 +280,39 @@ function CheckoutPage() {
                 />
               </div>
             </div>
+            {usuario?.direcciones?.length > 0 && (
+              <div className="form-group">
+                <label>Domicilios guardados</label>
+                <select
+                  value={domFactSeleccionado ?? ''}
+                  onChange={(e) => {
+                    const valor = e.target.value;
+                    if (valor === '') {
+                      setDomFactSeleccionado(null);
+                      return;
+                    }
+                    const idx = Number(valor);
+                    const dir = usuario.direcciones[idx];
+                    setDomFactSeleccionado(idx);
+                    setFacturacion((prev) => ({
+                      ...prev,
+                      direccion: `${dir.calle} ${dir.numero}`,
+                      pisoDepto: [dir.piso && `Piso ${dir.piso}`, dir.depto && `Depto ${dir.depto}`].filter(Boolean).join(', '),
+                      codigoPostal: dir.codigoPostal,
+                      ciudad: dir.ciudad,
+                      provincia: dir.provincia,
+                    }));
+                  }}
+                >
+                  <option value="">Elegí un domicilio guardado</option>
+                  {usuario.direcciones.map((dir, idx) => (
+                    <option key={idx} value={idx}>
+                      {dir.calle} {dir.numero}, {dir.ciudad} ({dir.codigoPostal})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="form-group">
               <label>Dirección <span className="campo-requerido">*</span></label>
               <input
@@ -332,7 +365,6 @@ function CheckoutPage() {
                   value={facturacion.codigoPostal}
                   onChange={handleFact}
                   required
-                  placeholder="Ej: 3260"
                   maxLength={8}
                 />
                 <span className="checkout-campo-ayuda">Solo números (sin letras)</span>
@@ -345,7 +377,6 @@ function CheckoutPage() {
                   value={facturacion.celular}
                   onChange={handleFact}
                   required
-                  placeholder="Ej: 3442123456"
                 />
               </div>
             </div>
@@ -427,32 +458,36 @@ function CheckoutPage() {
             {tipoEntrega === 'envio' && (
               <div className="checkout-envio">
                 {usuario?.direcciones?.length > 0 && (
-                  <div className="checkout-dom-guardados">
-                    <p className="checkout-dom-label">Domicilios guardados:</p>
-                    {usuario.direcciones.map((dir, idx) => (
-                      <label
-                        key={idx}
-                        className={`checkout-metodo ${domSeleccionado === idx ? 'activo' : ''}`}
-                      >
-                        <input
-                          type="radio"
-                          name="domGuardado"
-                          checked={domSeleccionado === idx}
-                          onChange={() => {
-                            setDomSeleccionado(idx);
-                            setUsarDomFact(false);
-                            setEnvio({
-                              calle: dir.calle,
-                              numero: String(dir.numero),
-                              ciudad: dir.ciudad,
-                              provincia: dir.provincia,
-                              codigoPostal: dir.codigoPostal,
-                            });
-                          }}
-                        />
-                        {dir.calle} {dir.numero}, {dir.ciudad} ({dir.codigoPostal})
-                      </label>
-                    ))}
+                  <div className="form-group">
+                    <label>Domicilios guardados</label>
+                    <select
+                      value={domSeleccionado ?? ''}
+                      onChange={(e) => {
+                        const valor = e.target.value;
+                        if (valor === '') {
+                          setDomSeleccionado(null);
+                          return;
+                        }
+                        const idx = Number(valor);
+                        const dir = usuario.direcciones[idx];
+                        setDomSeleccionado(idx);
+                        setUsarDomFact(false);
+                        setEnvio({
+                          calle: dir.calle,
+                          numero: String(dir.numero),
+                          ciudad: dir.ciudad,
+                          provincia: dir.provincia,
+                          codigoPostal: dir.codigoPostal,
+                        });
+                      }}
+                    >
+                      <option value="">Elegí un domicilio guardado</option>
+                      {usuario.direcciones.map((dir, idx) => (
+                        <option key={idx} value={idx}>
+                          {dir.calle} {dir.numero}, {dir.ciudad} ({dir.codigoPostal})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )}
 

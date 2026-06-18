@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const ordenSchema = new mongoose.Schema({
     idUsuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    tipoEntrega: { type: String, enum: ['retiro', 'envio'], default: 'retiro' },
     direccionEnvio: {
         calle: { type: String, default: '' },
         numero: { type: Number, default: 0 },

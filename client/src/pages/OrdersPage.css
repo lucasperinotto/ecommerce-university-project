@@ -34,6 +34,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   margin-bottom: 12px;
 }
 
@@ -54,14 +55,29 @@
   color: var(--gris-oscuro);
 }
 
-.orden-estado--cancelado {
-  background: #fde8e8;
-  color: #c0392b;
+.orden-estado--pendiente-de-pago {
+  background: #fff8e1;
+  color: var(--naranja);
+}
+
+.orden-estado--procesando {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.orden-estado--enviado {
+  background: #e0f2f1;
+  color: #00695c;
 }
 
 .orden-estado--entregado {
-  background: #e8f5e9;
-  color: #27ae60;
+  background: var(--verde-palido);
+  color: var(--verde-oscuro);
+}
+
+.orden-estado--cancelado {
+  background: var(--rojo-claro);
+  color: var(--rojo);
 }
 
 .orden-card-body {

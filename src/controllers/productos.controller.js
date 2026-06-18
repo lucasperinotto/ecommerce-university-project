@@ -142,12 +142,16 @@ const ajustarStock = async (req, res) => {
         if (typeof delta !== 'number') {
             return res.status(400).json({ error: 'El campo delta debe ser un número.' });
         }
-        const producto = await Producto.findByIdAndUpdate(
-            req.params.id,
+        const producto = await Producto.findOneAndUpdate(
+            { _id: req.params.id, cantidad: { $gte: -delta } },
             { $inc: { cantidad: delta } },
             { new: true }
         );
-        if (!producto) return res.status(404).json({ error: 'Producto no encontrado.' });
+        if (!producto) {
+            const existe = await Producto.findById(req.params.id);
+            if (!existe) return res.status(404).json({ error: 'Producto no encontrado.' });
+            return res.status(400).json({ error: 'No hay suficiente stock disponible.' });
+        }
         res.json(producto);
     } catch (error) {
         res.status(500).json({ error: 'Error al ajustar el stock.' });

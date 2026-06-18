@@ -70,7 +70,7 @@ const crearUsuario = async (req, res) => {
         delete usuarioResponse.contrasena;
 
         const payload = { id: nuevoUsuario._id.toString(), rol: nuevoUsuario.rol };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '24h'});
         return res.status(201).json({ token, usuarioResponse });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el usuario.' });

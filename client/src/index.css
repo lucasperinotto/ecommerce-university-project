@@ -6,6 +6,7 @@
 
 :root {
   --verde: #A5D6A7;
+  --verde-oscuro: #2E7D32;
   --beige: #F9F7F3;
   --blanco: #FFFFFF;
   --blanco-calido: #F1EDE3;
@@ -13,6 +14,9 @@
   --gris-medio: #7A7A7A;
   --gris-claro: #E8E4DC;
   --verde-palido: #EDF4ED;
+  --rojo: var(--rojo);
+  --rojo-claro: #fde8e8;
+  --naranja: #f57f17;
 }
 
 body {
@@ -143,13 +147,13 @@ button {
 }
 
 .auth-error {
-  color: #c0392b;
+  color: var(--rojo);
   font-size: 0.875rem;
   text-align: center;
 }
 
 .auth-success {
-  color: #27ae60;
+  color: var(--verde-oscuro);
   font-size: 0.875rem;
   text-align: center;
 }
@@ -202,7 +206,7 @@ button {
 }
 
 .pagina-error {
-  color: #c0392b;
+  color: var(--rojo);
 }
 
 /* ── Spinner ── */

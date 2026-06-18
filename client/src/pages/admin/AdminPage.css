@@ -95,11 +95,13 @@
   padding: 10px 20px;
   border-radius: 6px;
   font-size: 0.88rem;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
 .admin-btn-cancelar:hover {
-  border-color: var(--gris-medio);
+  border-color: var(--verde);
+  background: var(--verde-palido);
+  color: var(--gris-oscuro);
 }
 
 /* ── Table ── */
@@ -167,12 +169,12 @@
 
 .badge-activo {
   background: var(--verde-palido);
-  color: #2e7d32;
+  color: var(--verde-oscuro);
 }
 
 .badge-inactivo {
-  background: #fde8e8;
-  color: #c0392b;
+  background: var(--rojo-claro);
+  color: var(--rojo);
 }
 
 .badge-admin {
@@ -182,7 +184,7 @@
 
 .orden-estado--pendiente-de-pago {
   background: #fff8e1;
-  color: #f57f17;
+  color: var(--naranja);
 }
 
 .orden-estado--procesando {
@@ -197,12 +199,12 @@
 
 .orden-estado--entregado {
   background: var(--verde-palido);
-  color: #2e7d32;
+  color: var(--verde-oscuro);
 }
 
 .orden-estado--cancelado {
-  background: #fde8e8;
-  color: #c0392b;
+  background: var(--rojo-claro);
+  color: var(--rojo);
 }
 
 /* ── Action buttons ── */
@@ -216,7 +218,7 @@
   border: 1px solid var(--gris-claro);
   color: var(--gris-oscuro);
   padding: 5px 12px;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 0.8rem;
   transition: border-color 0.2s;
 }
@@ -227,24 +229,24 @@
 
 .admin-btn-baja {
   background: none;
-  border: 1px solid #fde8e8;
-  color: #c0392b;
+  border: 1px solid var(--rojo-claro);
+  color: var(--rojo);
   padding: 5px 12px;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 0.8rem;
   transition: background 0.2s;
 }
 
 .admin-btn-baja:hover {
-  background: #fde8e8;
+  background: var(--rojo-claro);
 }
 
 .admin-btn-restaurar {
   background: none;
   border: 1px solid var(--verde-palido);
-  color: #27ae60;
+  color: var(--verde-oscuro);
   padding: 5px 12px;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 0.8rem;
   transition: background 0.2s;
 }

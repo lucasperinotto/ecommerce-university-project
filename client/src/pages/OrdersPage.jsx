@@ -7,7 +7,7 @@ import useTitulo from '../hooks/useTitulo';
 import './OrdersPage.css';
 
 function OrdersPage() {
-  useTitulo('Mis órdenes');
+  useTitulo('Mis pedidos');
   const { usuario } = useAuth();
   const [ordenes, setOrdenes] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -36,7 +36,7 @@ function OrdersPage() {
 
   return (
     <main className="ordenes">
-      <h1 className="ordenes-titulo">Mis órdenes</h1>
+      <h1 className="ordenes-titulo">Mis pedidos</h1>
 
       {ordenes.length === 0 ? (
         <div className="ordenes-vacio">
