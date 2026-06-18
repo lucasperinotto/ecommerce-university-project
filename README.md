@@ -30,8 +30,8 @@ Crear un archivo `.env` en la **raíz del proyecto** (junto a `package.json`):
 
 ```env
 PORT=3000
-MONGO_URI=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/sabina-accesorios
-JWT_SECRET=sabina2026secreto
+MONGO_URI= <url-a-base-de-datos-en-mongo>
+JWT_SECRET= <a-elección>
 FRONTEND_URL=http://localhost:5173
 
 # Envío de mails (recuperación de contraseña)
@@ -42,8 +42,6 @@ SMTP_USER=<tu-email>@gmail.com
 SMTP_PASS=<contraseña de aplicación de Gmail, no la contraseña normal de la cuenta>
 MAIL_FROM=<tu-email>@gmail.com
 ```
-
-> **Importante**: la `MONGO_URI` debe incluir el nombre de la base de datos (`/sabina-accesorios`). Si se omite, Mongo se conecta por defecto a una base llamada `test`, vacía.
 
 ### 3. Configurar variables de entorno del frontend
 
@@ -57,13 +55,22 @@ VITE_API_BASE_URL=http://localhost:3000
 
 ```bash
 npm install
+npm install bcrypt
+npm install cors
+npm install crypto-js
+npm install dotenv
+npm install express
+npm install jsonwebtoken
+npm install mongoose
+npm install nodemailer
+npm install nodemon
 ```
 
 ### 5. Instalar dependencias del frontend
 
 ```bash
 cd client
-npm install
+npm install 
 cd ..
 ```
 
@@ -171,19 +178,13 @@ Roles soportados: `cliente` (default) y `admin`. Las rutas marcadas como **Admin
 | POST | `/auth/reset-password/:token` | Restablecer contraseña | No |
 
 **POST `/auth/login`**
-Body: `{ "mail": "string", "contrasena": "string" }`
-Respuesta `200`: usuario logueado: `{ "token": "jwt", "usuario": { "_id", "nombre", "apellido", "mail", "rol", "estado", ... } }`
-Errores: `400`: campos faltantes · `401`: usuario no encontrado / inactivo / credenciales inválidas
+Body: `{ "mail": "string", "contrasena": "string" }` | Respuesta: `200`: usuario logueado: `{ "token": "jwt", "usuario": { "_id", "nombre", "apellido", "mail", "rol", "estado" } }` | Errores: `400`: campos faltantes · `401`: usuario no encontrado / inactivo / credenciales inválidas
 
 **POST `/auth/forgot-password`**
-Body: `{ "mail": "string" }`
-Respuesta `200`: se envía mail de recuperación de contraseña: `{ "mensaje": "Se enviará un enlace de recuperación al correo electrónico ingresado." }` (mismo mensaje exista o no el mail, por seguridad)
-Errores: `400`: campos faltantes
+Body: `{ "mail": "string" }` | Respuesta: `200`: se envía mail de recuperación de contraseña: `{ "mensaje": "Se enviará un enlace de recuperación al correo electrónico ingresado." }` (mismo mensaje exista o no el mail, por seguridad) | Errores: `400`: campos faltantes
 
 **POST `/auth/reset-password/:token`**
-Body: `{ "nuevaContrasena": "string", "confirmar": "string" }`
-Respuesta `201`: usuario actualizado
-Errores: `400`: contraseñas no coinciden / menor a 6 caracteres · `400` token inválido o expirado
+Body: `{ "nuevaContrasena": "string", "confirmar": "string" }` | Respuesta: `201`: usuario actualizado | Errores: `400`: contraseñas no coinciden / menor a 6 caracteres · `400` token inválido o expirado
 
 ---
 
@@ -209,7 +210,7 @@ Respuesta: `200`: producto | Errores: `404`: producto no encontrado
 Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }` | Respuesta: `201`: producto creado | Errores: `404`: campos faltantes / ingresos no válidos
 
 **PUT `/productos/:id`**
-Body: Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }` | Respuesta: `200`: producto actualizado | Errores: `404`: producto no encontrado / campos faltantes / ingresos no válidos
+Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }` | Respuesta: `200`: producto actualizado | Errores: `404`: producto no encontrado / campos faltantes / ingresos no válidos
 
 **DELETE `/productos/:id`**
 Respuesta: `200`: baja lógica del producto (`estado: "inactivo"`) | Errores: `404`: producto no encontrado
@@ -322,7 +323,7 @@ Body:
   "direccionEnvio": { "calle", "numero", "ciudad", "provincia", "codigoPostal" }
 }
 ```
-`direccionEnvio` es obligatorio solo si `tipoEntrega === "envio"`. | Respuesta `201`: orden creada con `estado: "pendiente de pago"`. El stock se descuenta desde el frontend al confirmar (`PATCH /productos/:id/stock`). | Errores: `400`: campos faltantes / ingresos no válidos / producto no disponible / sin stock · `404`: usuario no encontrado
+`direccionEnvio` es obligatorio solo si `tipoEntrega === "envio"`. | Respuesta: `201`: orden creada con `estado: "pendiente de pago"`. El stock se descuenta desde el frontend al confirmar (`PATCH /productos/:id/stock`). | Errores: `400`: campos faltantes / ingresos no válidos / producto no disponible / sin stock · `404`: usuario no encontrado
 
 ---
 

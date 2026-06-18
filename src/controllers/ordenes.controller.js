@@ -7,7 +7,7 @@ const { isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 const obtenerOrdenes = async (req, res) => {
     try {
         const ordenes = await Orden.find().select("-__v").populate('idUsuario', 'nombre apellido mail');
-        res.json(ordenes);
+        res.status(200).json(ordenes);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las órdenes.' });
     }
@@ -19,8 +19,8 @@ const obtenerOrdenesPorUsuario = async (req, res) => {
         return res.status(403).json({ error: 'No autorizado.' });
     }
     try {
-        const ordenes = await Orden.find({ idUsuario: req.params.id }).sort({ createdAt: -1 }).select("-__v");
-        res.json(ordenes);
+        const orden = await Orden.find({ idUsuario: req.params.id }).sort({ createdAt: -1 }).select("-__v");
+        res.status(200).json(orden);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las órdenes.' });
     }
