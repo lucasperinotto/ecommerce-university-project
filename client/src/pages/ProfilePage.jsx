@@ -8,6 +8,20 @@ import Spinner from '../components/Spinner';
 import useTitulo from '../hooks/useTitulo';
 import './ProfilePage.css';
 
+const PROVINCIAS = [
+  'Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', 'Ciudad Autónoma de Buenos Aires',
+  'Córdoba', 'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy', 'La Pampa', 'La Rioja',
+  'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan', 'San Luis',
+  'Santa Cruz', 'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán',
+];
+
+const normalizar = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().trim();
+
+const matchProvincia = (nombreApi) => {
+  const norm = normalizar(nombreApi);
+  return PROVINCIAS.find((p) => normalizar(p) === norm) || '';
+};
+
 function ProfilePage() {
   useTitulo('Mi perfil');
   const { usuario, actualizarUsuario } = useAuth();
@@ -62,7 +76,7 @@ function ProfilePage() {
         setFormDom((prev) => ({
           ...prev,
           ciudad: capitalizar(lugar['place name']),
-          provincia: capitalizar(lugar['state']),
+          provincia: matchProvincia(lugar['state']) || capitalizar(lugar['state']),
         }));
       }
     } catch {}

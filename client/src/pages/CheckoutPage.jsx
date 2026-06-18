@@ -300,7 +300,7 @@ function CheckoutPage() {
                       pisoDepto: [dir.piso && `Piso ${dir.piso}`, dir.depto && `Depto ${dir.depto}`].filter(Boolean).join(', '),
                       codigoPostal: dir.codigoPostal,
                       ciudad: dir.ciudad,
-                      provincia: dir.provincia,
+                      provincia: matchProvincia(dir.provincia) || dir.provincia,
                     }));
                   }}
                 >
@@ -476,7 +476,7 @@ function CheckoutPage() {
                           calle: dir.calle,
                           numero: String(dir.numero),
                           ciudad: dir.ciudad,
-                          provincia: dir.provincia,
+                          provincia: matchProvincia(dir.provincia) || dir.provincia,
                           codigoPostal: dir.codigoPostal,
                         });
                       }}

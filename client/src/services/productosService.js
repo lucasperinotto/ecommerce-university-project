@@ -25,4 +25,4 @@ export const restaurarProducto = (id) =>
   axios.patch(`${API}/productos/${id}/restore`, {}, headers());
 
 export const ajustarStock = (id, delta) =>
-  axios.patch(`${API}/productos/${id}/stock`, { delta });
+  axios.patch(`${API}/productos/${id}/stock`, { delta }, headers());
