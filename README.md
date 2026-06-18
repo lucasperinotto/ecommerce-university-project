@@ -164,141 +164,177 @@ Roles soportados: `cliente` (default) y `admin`. Las rutas marcadas como **Admin
 
 ### Auth (`/auth`)
 
-| Método | Endpoint | Auth |
-|--------|----------|------|
-| POST | `/auth/login` | No |
-| POST | `/auth/forgot-password` | No |
-| POST | `/auth/reset-password/:token` | No |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/auth/login` | Iniciar sesión | No |
+| POST | `/auth/forgot-password` | Solicitar recuperación de contraseña | No |
+| POST | `/auth/reset-password/:token` | Restablecer contraseña | No |
 
 **POST `/auth/login`**
 Body: `{ "mail": "string", "contrasena": "string" }`
-Respuesta `200`: `{ "token": "jwt", "usuario": { "_id", "nombre", "apellido", "mail", "rol", "estado", ... } }`
-Errores: `400` campos faltantes · `401` usuario no encontrado / inactivo / credenciales inválidas
+Respuesta `200`: usuario logueado: `{ "token": "jwt", "usuario": { "_id", "nombre", "apellido", "mail", "rol", "estado", ... } }`
+Errores: `400`: campos faltantes · `401`: usuario no encontrado / inactivo / credenciales inválidas
 
 **POST `/auth/forgot-password`**
 Body: `{ "mail": "string" }`
-Respuesta `200`: `{ "mensaje": "Se enviará un enlace de recuperación al correo electrónico ingresado." }` (mismo mensaje exista o no el mail, por seguridad)
+Respuesta `200`: se envía mail de recuperación de contraseña: `{ "mensaje": "Se enviará un enlace de recuperación al correo electrónico ingresado." }` (mismo mensaje exista o no el mail, por seguridad)
+Errores: `400`: campos faltantes
 
 **POST `/auth/reset-password/:token`**
 Body: `{ "nuevaContrasena": "string", "confirmar": "string" }`
 Respuesta `201`: usuario actualizado
-Errores: `400` contraseñas no coinciden / menor a 6 caracteres · `400` token inválido o expirado
+Errores: `400`: contraseñas no coinciden / menor a 6 caracteres · `400` token inválido o expirado
 
 ---
 
 ### Productos (`/productos`)
 
-| Método | Endpoint | Auth |
-|--------|----------|------|
-| GET | `/productos` | No |
-| GET | `/productos/:id` | No |
-| POST | `/productos` | Admin |
-| PUT | `/productos/:id` | Admin |
-| DELETE | `/productos/:id` | Admin |
-| PATCH | `/productos/:id/restore` | Admin |
-| PATCH | `/productos/:id/stock` | No* |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| GET | `/productos` | Obtener Productos | No |
+| GET | `/productos/:id` | Obtener Producto por ID | No |
+| POST | `/productos` | Crear Producto | Admin |
+| PUT | `/productos/:id` | Actualizar Producto | Admin |
+| DELETE | `/productos/:id` | Baja Lógica de Producto | Admin |
+| PATCH | `/productos/:id/restore` | Restaurar Producto | Admin |
+| PATCH | `/productos/:id/stock` | Ajustar Stock | No* |
 
-**GET `/productos`** → `200`: array de productos (`estado` puede ser `'activo'` o `'inactivo'`)
+**GET `/productos`**
+Respuesta: `200`: array de productos
 
-**GET `/productos/:id`** → `200`: producto · `404` no encontrado
+**GET `/productos/:id`**
+Respuesta: `200`: producto
+Errores: `404`: producto no encontrado
 
 **POST `/productos`**
 Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }`
-Respuesta `201`: producto creado
+Respuesta: `201`: producto creado
+Errores: `404`: campos faltantes / ingresos no válidos
 
-**PUT `/productos/:id`** — mismo body que POST (parcial) → `200`: producto actualizado
+**PUT `/productos/:id`**
+Body: Body: `{ "nombre", "descripcion", "precio": number, "cantidad": number, "imagen": "url", "categoria": "anillos"|"aros"|"collares"|"carteras" }`
+Respuesta: `200`: producto actualizado
+Errores: `404`: producto no encontrado / campos faltantes / ingresos no válidos
 
-**DELETE `/productos/:id`** — baja lógica → `200`: producto con `estado: "inactivo"`
+**DELETE `/productos/:id`**
+Respuesta: `200`: baja lógica del producto (`estado: "inactivo"`)
+Errores: `404`: producto no encontrado
 
-**PATCH `/productos/:id/restore`** → `200`: producto con `estado: "activo"`
+**PATCH `/productos/:id/restore`**
+Respuesta: `200`: alta lógica de un producto inactivo (`estado: "activo"`)
+Errores: `404`: producto no encontrado
 
 **PATCH `/productos/:id/stock`**
 Body: `{ "delta": number }` (positivo suma stock, negativo resta)
-Respuesta `200`: producto con `cantidad` actualizada
-\* *Sin protección de autenticación actualmente — pendiente de asegurar.*
+Respuesta: `200`: producto con `cantidad` actualizada
+Errores: `400`: ingreso no válido / stock insuficiente · `404`: producto no encontrado
 
 ---
 
 ### Usuarios (`/usuarios`)
 
-| Método | Endpoint | Auth |
-|--------|----------|------|
-| GET | `/usuarios` | Admin |
-| GET | `/usuarios/:id` | Logueado |
-| POST | `/usuarios` | No (registro) |
-| PUT | `/usuarios/:id` | Logueado |
-| PATCH | `/usuarios/:id/address` | Logueado |
-| DELETE | `/usuarios/:id` | Admin |
-| PATCH | `/usuarios/:id/restore` | Logueado |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| GET | `/usuarios` | Obtener Usuarios | Admin |
+| GET | `/usuarios/:id` | Obtener Usuario por ID | Logueado |
+| POST | `/usuarios` | Crear Usuario | No |
+| PUT | `/usuarios/:id` | Actualizar Usuario | Logueado |
+| PATCH | `/usuarios/:id/address` | Agregar Dirección | Logueado |
+| DELETE | `/usuarios/:id` | Baja Lógica de Usuario | Admin |
+| PATCH | `/usuarios/:id/restore` | Restaurar Usuario | Logueado |
 
-**GET `/usuarios`** → `200`: array de usuarios (solo admin)
+**GET `/usuarios`**
+Respuesta: `200`: array de usuarios
 
-**GET `/usuarios/:id`** → `200`: usuario · `404` no encontrado
+**GET `/usuarios/:id`**
+Respuesta: `200`: usuario · `404`: no encontrado
 
-**POST `/usuarios`** (registro)
-Body: `{ "nombre", "apellido", "mail", "contrasena", "confirmar", "rol"? }`
-Respuesta `201`: `{ "token": "jwt", "usuarioResponse": { ...usuario sin contraseña } }`
-Errores: `400` campos faltantes / mail inválido / contraseña corta o no coincide · `401` mail ya registrado y activo
+**POST `/usuarios`**
+Body: `{ "nombre", "apellido", "mail", "contrasena", "confirmar", "rol" }`
+Respuesta: `201`: nuevo usuario `{ "token": "jwt", "usuarioResponse": { ...usuario sin contraseña } }`
+Errores: `400`: campos faltantes / mail inválido / contraseña menor a seis caracteres o no coincide · `401`: mail ya registrado y activo
 
 **PUT `/usuarios/:id`**
 Body: `{ "nombre", "apellido" }`
-Respuesta `200`: usuario actualizado
+Respuesta: `200`: usuario actualizado
+Errores: `400`: campos faltantes · `403`: no autorizado · `404`: usuario no encontrado
 
 **PATCH `/usuarios/:id/address`**
-Body: `{ "direcciones": [{ "calle", "numero", "ciudad", "provincia", "codigoPostal" }] }` (reemplaza el array completo)
-Respuesta `200`: usuario con domicilios actualizados
+Body: `{ "direcciones": [{ "calle", "numero", "ciudad", "provincia", "codigoPostal" }] }`
+Respuesta: `200`: usuario con domicilios actualizados
+Errores: `403`: no autorizado · `404`: usuario no encontrado
 
-**DELETE `/usuarios/:id`** — baja lógica → `200`: usuario con `estado: "inactivo"`
+**DELETE `/usuarios/:id`**
+Respuesta: `200`: baja lógica del usuario (`estado: "inactivo"`)
+Errores: `404`: usuario no encontrado
 
-**PATCH `/usuarios/:id/restore`** → `200`: usuario con `estado: "activo"`
+**PATCH `/usuarios/:id/restore`**
+Respuesta: `200`: alta lógica del usuario (`estado: "activo"`)
+Errores: `404`: usuario no encontrado
 
 ---
 
 ### Carrito (`/carrito`)
 
-> El **frontend no usa estos endpoints** — el carrito de compras se maneja 100% en `localStorage` del navegador. Estos endpoints existen en el backend para cumplir con el requisito de gestión de carrito de la consigna.
+> El **frontend no usa estos endpoints**: el carrito de compras se maneja 100% en `localStorage` del navegador. Estos endpoints existen en el backend para cumplir con el requisito de gestión de carrito.
 
-| Método | Endpoint | Auth |
-|--------|----------|------|
-| GET | `/carrito` | Admin |
-| GET | `/carrito/:id` | Dueño o admin |
-| POST | `/carrito/:id` | Dueño o admin |
-| POST | `/carrito/:id/items` | Dueño o admin |
-| PUT | `/carrito/:id/items/:idProducto` | Dueño o admin |
-| DELETE | `/carrito/:id/items/:idProducto` | Dueño o admin |
-| DELETE | `/carrito/:id/items` | Dueño o admin |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| GET | `/carrito` | Obtener Carritos | Admin |
+| GET | `/carrito/:id` | Obtener Carrito por ID | Dueño o admin |
+| POST | `/carrito/:id` | Crear Carrito | Dueño o admin |
+| POST | `/carrito/:id/items` | Agregar Producto al Carrito | Dueño o admin |
+| PUT | `/carrito/:id/items/:idProducto` | Modificar Cantidad de un Producto en el Carrito | Dueño o admin |
+| DELETE | `/carrito/:id/items/:idProducto` | Eliminar Producto del Carrito | Dueño o admin |
+| DELETE | `/carrito/:id/items` | Vaciar Carrito | Dueño o admin |
 
 `:id` es el `idUsuario` dueño del carrito (no el id del carrito).
 
-**POST `/carrito/:id`** (crear) → `201`: `{ "idUsuario", "items": [] }` · `400` si ya tiene carrito
+**GET `/carrito`**
+Respuesta: `200`: array de carritos
 
-**POST `/carrito/:id/items`** (agregar producto)
+**GET `/carrito/:id`**
+Respuesta: `200`: carrito · `404`: no encontrado
+
+**POST `/carrito/:id`**
+Respuesta: `201`: nuevo carrito `{ "idUsuario", "items": [] }`
+Errores: `400`: carrito ya existente
+
+**POST `/carrito/:id/items`**
 Body: `{ "idProducto", "nombre", "precio": number, "cantidad": number }`
-Respuesta `201`: carrito actualizado (si el producto ya estaba, suma la cantidad)
+Respuesta: `201`: carrito actualizado (si el producto ya existía en el carrito, suma la cantidad)
+Errores: `400`: campos faltantes / ingresos no válidos / carrito no encontrado
 
-**PUT `/carrito/:id/items/:idProducto`** (modificar cantidad)
+**PUT `/carrito/:id/items/:idProducto`**
 Body: `{ "cantidad": number }`
-Respuesta `200`: carrito actualizado · `404` producto no está en el carrito
+Respuesta: `200`: carrito actualizado
+Errores: `404`: ingreso no válido / carrito no encontrado / producto no está en el carrito
 
-**DELETE `/carrito/:id/items/:idProducto`** (eliminar producto) → `200`: carrito sin ese ítem
+**DELETE `/carrito/:id/items/:idProducto`** 
+Respuesta: `200`: carrito sin ese ítem
+Errores: `404`: carrito no encontrado / producto no está en el carrito
 
-**DELETE `/carrito/:id/items`** (vaciar carrito) → `200`: carrito con `items: []`
+**DELETE `/carrito/:id/items`** 
+Respuesta: `200`: carrito con `items: []`
+Errores: `404`: carrito no encontrado
 
 ---
 
 ### Órdenes (`/ordenes`)
 
-| Método | Endpoint | Auth |
-|--------|----------|------|
-| GET | `/ordenes` | Admin |
-| GET | `/ordenes/usuario/:id` | Dueño o admin |
-| POST | `/ordenes` | Logueado |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| GET | `/ordenes` | Obtener Ordenes | Admin |
+| GET | `/ordenes/usuario/:id` | Obtener Ordenes de un Usuario | Dueño o admin |
+| POST | `/ordenes` | Generar Orden | Logueado |
 
-**GET `/ordenes`** → `200`: array de todas las órdenes (admin)
+**GET `/ordenes`** 
+Respuesta: `200`: array de todas las órdenes
 
-**GET `/ordenes/usuario/:id`** → `200`: array de órdenes del usuario `:id`
+**GET `/ordenes/usuario/:id`** 
+Respuesta: `200`: array de órdenes del usuario `:id`
 
-**POST `/ordenes`** (generar orden)
+**POST `/ordenes`**
 Body:
 ```json
 {
@@ -312,13 +348,14 @@ Body:
 ```
 `direccionEnvio` es obligatorio solo si `tipoEntrega === "envio"`.
 Respuesta `201`: orden creada con `estado: "pendiente de pago"`. El stock se descuenta desde el frontend al confirmar (`PATCH /productos/:id/stock`).
+Errores: `400`: campos faltantes / ingresos no válidos / producto no disponible / sin stock · `404`: usuario no encontrado
 
 ---
 
 ## Rutas del frontend
 
-| Ruta | Acceso | Descripción |
-|------|--------|-------------|
+| Ruta | Auth | Descripción |
+|------|------|-------------|
 | `/` | Público | Home |
 | `/catalogo` | Público | Catálogo (filtra por `?categoria=`) |
 | `/producto/:id` | Público | Detalle de producto |
