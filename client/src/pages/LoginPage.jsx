@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import useTitulo from '../hooks/useTitulo';
 
 function LoginPage() {
+  useTitulo('Iniciar sesión');
   const { login } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();

@@ -5,7 +5,10 @@ const {
     obtenerCarritos,
     obtenerCarritoPorId,
     crearCarrito,
-    agregarProductoAlCarrito
+    agregarProductoAlCarrito,
+    modificarCantidadProducto,
+    eliminarProductoDelCarrito,
+    vaciarCarrito
 } = require('../controllers/carrito.controller');
 
 const {
@@ -14,8 +17,11 @@ const {
 } = require('../middlewares/auth.middleware')
 
 router.get('/', authMiddleware, adminMiddleware, obtenerCarritos);
-router.get('/:id', authMiddleware, adminMiddleware, obtenerCarritoPorId);
-router.post('/:id', crearCarrito);
-router.post('/:id/items', agregarProductoAlCarrito);
+router.get('/:id', authMiddleware, obtenerCarritoPorId);
+router.post('/:id', authMiddleware, crearCarrito);
+router.post('/:id/items', authMiddleware, agregarProductoAlCarrito);
+router.put('/:id/items/:idProducto', authMiddleware, modificarCantidadProducto);
+router.delete('/:id/items/:idProducto', authMiddleware, eliminarProductoDelCarrito);
+router.delete('/:id/items', authMiddleware, vaciarCarrito);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const Orden = require('../models/Orden');
 const Usuario = require('../models/Usuario');
+const { isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 
 // Endpoint "Obtener Ordenes"
 const obtenerOrdenes = async (req, res) => {
@@ -13,34 +14,38 @@ const obtenerOrdenes = async (req, res) => {
 
 // Endpoint "Obtener Ordenes por ID de Usuario"
 const obtenerOrdenesPorUsuario = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
     try {
-        const orden = await Orden.findOne({ idUsuario: req.params.id }).select("-__v");
-        if (!orden) {
-            return res.status(404).json({ message: 'Orden no encontrada' });
-        }
-        res.json(orden);
+        const ordenes = await Orden.find({ idUsuario: req.params.id }).sort({ createdAt: -1 }).select("-__v");
+        res.json(ordenes);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la orden.' });
+        res.status(500).json({ error: 'Error al obtener las órdenes.' });
     }
 };
 
 // Endpoint "Generar Orden de Compra"
 const generarOrden = async (req, res) => {
-    const { direccionEnvio, items, precioTotal, metodoPago } = req.body;
-    if (!direccionEnvio || !items || !precioTotal || !metodoPago) {
+    const { idUsuario, items, precioTotal, metodoPago, direccionEnvio, tipoEntrega } = req.body;
+
+    if (!idUsuario || !items?.length || !precioTotal || !metodoPago) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
-    const usuarioExistente = await Usuario.findById(req.params.id);
+    const usuarioExistente = await Usuario.findById(idUsuario);
     if (!usuarioExistente) {
-        return res.status(400).json({ error: 'Usuario no encontrado.'});
+        return res.status(400).json({ error: 'Usuario no encontrado.' });
     }
 
-    if (direccionEnvio.calle === '' || direccionEnvio.numero === '' || direccionEnvio.ciudad === '' || direccionEnvio.provincia === '' || direccionEnvio.codigoPostal === '') {
-        return res.status(400).json({ error: 'Todos los campos de dirección de envío son obligatorios.' });
+    if (tipoEntrega === 'envio') {
+        if (!direccionEnvio || !direccionEnvio.calle || !direccionEnvio.numero || !direccionEnvio.ciudad || !direccionEnvio.provincia || !direccionEnvio.codigoPostal) {
+            return res.status(400).json({ error: 'Todos los campos de dirección de envío son obligatorios.' });
+        }
     }
 
-    if (items.idProducto === '' || items.nombre === '' || items.precio === '' || items.cantidad === '') {
+    const itemInvalido = items.some((i) => !i.idProducto || !i.nombre || !i.precio || !i.cantidad);
+    if (itemInvalido) {
         return res.status(400).json({ error: 'Todos los campos de items son obligatorios.' });
     }
 
@@ -48,17 +53,17 @@ const generarOrden = async (req, res) => {
         return res.status(400).json({ error: 'Ingrese un monto válido.' });
     }
 
-    if (!metodoPago.includes(metodoPago)) {
-        return res.status(400).json({ error: 'El método de pago debe ser "tarjeta", "paypal" o "efectivo".' });
+    if (!['efectivo', 'transferencia', 'tarjeta', 'paypal'].includes(metodoPago)) {
+        return res.status(400).json({ error: 'Método de pago inválido.' });
     }
 
     try {
         const nuevaOrden = new Orden({
-            idUsuario: usuarioExistente._id,
-            direccionEnvio: req.body.direccionEnvio,
-            items: req.body.items,
-            precioTotal: req.body.precioTotal,
-            metodoPago: req.body.metodoPago,
+            idUsuario,
+            direccionEnvio: tipoEntrega === 'envio' ? direccionEnvio : undefined,
+            items,
+            precioTotal,
+            metodoPago,
             estado: "pendiente de pago"
         });
         await nuevaOrden.save();

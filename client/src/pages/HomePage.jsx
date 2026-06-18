@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import useTitulo from '../hooks/useTitulo';
 import './HomePage.css';
 
 const categorias = [
@@ -9,6 +10,7 @@ const categorias = [
 ];
 
 function HomePage() {
+  useTitulo('Inicio');
   return (
     <main className="home">
       <section className="hero">

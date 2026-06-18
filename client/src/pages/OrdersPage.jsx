@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getMisOrdenes } from '../services/ordenesService';
 import Spinner from '../components/Spinner';
+import useTitulo from '../hooks/useTitulo';
 import './OrdersPage.css';
 
 function OrdersPage() {
+  useTitulo('Mis órdenes');
   const { usuario } = useAuth();
   const [ordenes, setOrdenes] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -60,8 +62,8 @@ function OrdersPage() {
               </div>
               <div className="orden-card-body">
                 <p className="orden-fecha">
-                  {orden.fechaCreacion
-                    ? new Date(orden.fechaCreacion).toLocaleDateString('es-AR')
+                  {orden.createdAt
+                    ? new Date(orden.createdAt).toLocaleDateString('es-AR')
                     : '—'}
                 </p>
                 <p className="orden-items">

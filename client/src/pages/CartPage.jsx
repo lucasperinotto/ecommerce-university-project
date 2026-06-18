@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
 import ModalConfirm from '../components/ModalConfirm';
+import useTitulo from '../hooks/useTitulo';
 import '../components/ModalConfirm.css';
 import './CartPage.css';
 
 function CartPage() {
+  useTitulo('Carrito');
   const { items, actualizarCantidad, eliminarItem, vaciarCarrito, total } = useCarrito();
   const [modal, setModal] = useState(null);
 

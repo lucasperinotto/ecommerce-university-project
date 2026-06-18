@@ -1,4 +1,5 @@
 const Carrito = require('../models/Carrito');
+const { isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 
 // Endpoint "Obtener Carritos"
 const obtenerCarritos = async (req, res) => {
@@ -12,6 +13,9 @@ const obtenerCarritos = async (req, res) => {
 
 // Endpoint "Obtener un Carrito por ID de Usuario"
 const obtenerCarritoPorId = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
     try {
         const carrito = await Carrito.findOne({ idUsuario: req.params.id }).select("-__v");
         if (!carrito) {
@@ -25,9 +29,13 @@ const obtenerCarritoPorId = async (req, res) => {
 
 // Endpoint "Crear Carrito"
 const crearCarrito = async (req, res) => {
-    const carritoExistente = await Carrito.findOne({ idUsuario: req.params.id});
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
+
+    const carritoExistente = await Carrito.findOne({ idUsuario: req.params.id });
     if (carritoExistente) {
-        return res.status(400).json({ error: 'Este usuario ya tiene un carrito.'});
+        return res.status(400).json({ error: 'Este usuario ya tiene un carrito.' });
     }
 
     try {
@@ -44,12 +52,16 @@ const crearCarrito = async (req, res) => {
 
 // Endpoint "Agregar Producto a un Carrito"
 const agregarProductoAlCarrito = async (req, res) => {
-    const carrito = await Carrito.findOne({ idUsuario: req.params.id });
-    if (!carrito) {
-        return res.status(404).json({ error: 'Carrito no encontrado.'});
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
     }
 
-    const {idProducto, nombre, precio, cantidad} = req.body;
+    const carrito = await Carrito.findOne({ idUsuario: req.params.id });
+    if (!carrito) {
+        return res.status(404).json({ error: 'Carrito no encontrado.' });
+    }
+
+    const { idProducto, nombre, precio, cantidad } = req.body;
     if (!idProducto || !nombre || !precio || !cantidad) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
@@ -62,29 +74,98 @@ const agregarProductoAlCarrito = async (req, res) => {
         return res.status(400).json({ error: 'Ingrese una cantidad válida.' });
     }
 
-    let productoFinal;
     const productoExistente = carrito.items.find(item => item.idProducto.toString() === idProducto.toString());
     if (productoExistente) {
         productoExistente.cantidad += cantidad;
-        productoFinal = productoExistente;
     } else {
-        const productoAgregado = {
-            idProducto: idProducto,
-            nombre: nombre,
-            precio: precio,
-            cantidad: cantidad
-        };
-        productoFinal = productoAgregado;
+        carrito.items.push({ idProducto, nombre, precio, cantidad });
     }
 
-    carrito.items.push(productoFinal);
     await carrito.save();
-    res.status(201).json(productoFinal);
+    res.status(201).json(carrito);
+};
+
+// Endpoint "Modificar Cantidad de un Producto del Carrito"
+const modificarCantidadProducto = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
+
+    const { cantidad } = req.body;
+    if (typeof cantidad !== 'number' || cantidad <= 0) {
+        return res.status(400).json({ error: 'Ingrese una cantidad válida.' });
+    }
+
+    try {
+        const carrito = await Carrito.findOne({ idUsuario: req.params.id });
+        if (!carrito) {
+            return res.status(404).json({ error: 'Carrito no encontrado.' });
+        }
+
+        const item = carrito.items.find(i => i.idProducto.toString() === req.params.idProducto);
+        if (!item) {
+            return res.status(404).json({ error: 'Producto no encontrado en el carrito.' });
+        }
+
+        item.cantidad = cantidad;
+        await carrito.save();
+        res.json(carrito);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al modificar la cantidad.' });
+    }
+};
+
+// Endpoint "Eliminar Producto del Carrito"
+const eliminarProductoDelCarrito = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
+
+    try {
+        const carrito = await Carrito.findOne({ idUsuario: req.params.id });
+        if (!carrito) {
+            return res.status(404).json({ error: 'Carrito no encontrado.' });
+        }
+
+        const cantidadPrevia = carrito.items.length;
+        carrito.items = carrito.items.filter(i => i.idProducto.toString() !== req.params.idProducto);
+        if (carrito.items.length === cantidadPrevia) {
+            return res.status(404).json({ error: 'Producto no encontrado en el carrito.' });
+        }
+
+        await carrito.save();
+        res.json(carrito);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar el producto.' });
+    }
+};
+
+// Endpoint "Vaciar Carrito"
+const vaciarCarrito = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
+
+    try {
+        const carrito = await Carrito.findOne({ idUsuario: req.params.id });
+        if (!carrito) {
+            return res.status(404).json({ error: 'Carrito no encontrado.' });
+        }
+
+        carrito.items = [];
+        await carrito.save();
+        res.json(carrito);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al vaciar el carrito.' });
+    }
 };
 
 module.exports = {
     obtenerCarritos,
     obtenerCarritoPorId,
     crearCarrito,
-    agregarProductoAlCarrito
+    agregarProductoAlCarrito,
+    modificarCantidadProducto,
+    eliminarProductoDelCarrito,
+    vaciarCarrito
 }

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
+const { isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 
 // Endpoint "Obtener todos los Usuarios"
 const obtenerUsuarios = async (req, res) => {
@@ -14,6 +15,9 @@ const obtenerUsuarios = async (req, res) => {
 
 // Endpoint "Obtener un Usuario por ID"
 const obtenerUsuarioPorId = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
     try {
         const usuario = await Usuario.findById(req.params.id).select("-__v");
         if (!usuario) {
@@ -27,7 +31,7 @@ const obtenerUsuarioPorId = async (req, res) => {
 
 // Endpoint "Crear Usuario"
 const crearUsuario = async (req, res) => {
-    const {nombre, apellido, mail, contrasena, confirmar} = req.body;
+    const {nombre, apellido, mail, contrasena, confirmar, rol} = req.body;
     if (!nombre || !apellido || !mail || !contrasena || !confirmar) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
@@ -36,7 +40,7 @@ const crearUsuario = async (req, res) => {
         return res.status(400).json({ error: 'Ingrese un mail válido.' });
     }
 
-    const usuario = await Usuario.findOne({ mail });
+    const usuario = await Usuario.findOne({ mail, estado: 'activo' });
     if (usuario) {
         return res.status(401).json({ error: 'El correo electrónico ingresado ya está en uso.' });
     }
@@ -65,7 +69,7 @@ const crearUsuario = async (req, res) => {
         const usuarioResponse = nuevoUsuario.toObject();
         delete usuarioResponse.contrasena;
 
-        const payload = { id: usuario._id.toString(), rol: usuario.rol };
+        const payload = { id: nuevoUsuario._id.toString(), rol: nuevoUsuario.rol };
         const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1h'});
         return res.status(201).json({ token, usuarioResponse });
     } catch (error) {
@@ -75,6 +79,9 @@ const crearUsuario = async (req, res) => {
 
 // Endpoint "Actualizar Usuario"
 const actualizarUsuario = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
     try {
         const usuario = await Usuario.findById(req.params.id).select("-__v");
         if (!usuario) {
@@ -96,29 +103,22 @@ const actualizarUsuario = async (req, res) => {
     }
 }
 
-// Endpoint "Agregar Direccion de Usuario"
+// Endpoint "Actualizar Direcciones de Usuario"
 const agregarDireccion = async (req, res) => {
+    if (!isOwnerOrAdmin(req, req.params.id)) {
+        return res.status(403).json({ error: 'No autorizado.' });
+    }
     try {
         const usuario = await Usuario.findById(req.params.id).select("-__v");
         if (!usuario) {
-            return res.status(404).json({ error: 'Usuario no encontrado.'});
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
         }
 
-        const {calle, numero, ciudad, provincia, codigoPostal} = req.body;
-        if (!calle || !numero || !ciudad || !provincia || !codigoPostal) {
-            return res.status(400).json({ error: 'Faltan campos requeridos.' });
-        }
-
-        usuario.direcciones.calle = calle;
-        usuario.direcciones.numero = numero;
-        usuario.direcciones.ciudad = ciudad;
-        usuario.direcciones.provincia = provincia;
-        usuario.direcciones.codigoPostal = codigoPostal;
-
+        usuario.direcciones = req.body.direcciones || [];
         await usuario.save();
         res.json(usuario);
     } catch (error) {
-        res.status(500).json({ error: 'Error al agregar dirección.' });
+        res.status(500).json({ error: 'Error al actualizar domicilios.' });
     }
 }
 

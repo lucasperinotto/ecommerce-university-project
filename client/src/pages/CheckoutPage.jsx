@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { crearOrden } from '../services/ordenesService';
 import { ajustarStock } from '../services/productosService';
+import useTitulo from '../hooks/useTitulo';
 import './CheckoutPage.css';
 
 const DATOS_BANCARIOS = {
@@ -13,18 +15,41 @@ const DATOS_BANCARIOS = {
   alias: 'SABINA.ACCESORIOS',
 };
 
-const facturacionVacia = { nombreCompleto: '', dni: '', domicilio: '' };
+const PROVINCIAS = [
+  'Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', 'Ciudad Autónoma de Buenos Aires',
+  'Córdoba', 'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy', 'La Pampa', 'La Rioja',
+  'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan', 'San Luis',
+  'Santa Cruz', 'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán',
+];
+
+const normalizar = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().trim();
+
+const matchProvincia = (nombreApi) => {
+  const norm = normalizar(nombreApi);
+  return PROVINCIAS.find((p) => normalizar(p) === norm) || '';
+};
+
+const facturacionVacia = { nombre: '', apellido: '', dni: '', mail: '', direccion: '', pisoDepto: '', codigoPostal: '', ciudad: '', provincia: '', celular: '' };
 const envioVacio = { calle: '', numero: '', ciudad: '', provincia: '', codigoPostal: '' };
 
 function CheckoutPage() {
+  useTitulo('Confirmar compra');
   const { items, total, vaciarCarrito } = useCarrito();
   const { usuario } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const [facturacion, setFacturacion] = useState(facturacionVacia);
+  const [facturacion, setFacturacion] = useState({
+    ...facturacionVacia,
+    nombre: usuario?.nombre || '',
+    apellido: usuario?.apellido || '',
+    mail: usuario?.mail || '',
+  });
+  const [notas, setNotas] = useState('');
   const [metodoPago, setMetodoPago] = useState('efectivo');
   const [tipoEntrega, setTipoEntrega] = useState('retiro');
   const [usarDomFact, setUsarDomFact] = useState(false);
+  const [domSeleccionado, setDomSeleccionado] = useState(null);
   const [envio, setEnvio] = useState(envioVacio);
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
@@ -35,19 +60,49 @@ function CheckoutPage() {
     return null;
   }
 
-  const handleFact = (e) => setFacturacion({ ...facturacion, [e.target.name]: e.target.value });
-  const handleEnvio = (e) => setEnvio({ ...envio, [e.target.name]: e.target.value });
+  const capitalizar = (s) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+
+  const buscarLocalidad = async (cp, setter) => {
+    if (cp.length < 4) return;
+    try {
+      const res = await fetch(`https://api.zippopotam.us/AR/${cp}`);
+      if (!res.ok) return;
+      const json = await res.json();
+      const lugar = json.places?.[0];
+      if (lugar) {
+        setter((prev) => ({
+          ...prev,
+          ciudad: capitalizar(lugar['place name']),
+          provincia: matchProvincia(lugar['state']) || capitalizar(lugar['state']),
+        }));
+      }
+    } catch (err) {
+      console.error('Error al buscar localidad por código postal:', err);
+      showToast('No se pudo autocompletar la localidad. Completala manualmente.', 'info');
+    }
+  };
+
+  const handleFact = (e) => {
+    const { name, value } = e.target;
+    setFacturacion((prev) => ({ ...prev, [name]: value }));
+    if (name === 'codigoPostal') buscarLocalidad(value, setFacturacion);
+  };
+
+  const handleEnvio = (e) => {
+    const { name, value } = e.target;
+    setEnvio((prev) => ({ ...prev, [name]: value }));
+    if (name === 'codigoPostal') buscarLocalidad(value, setEnvio);
+  };
 
   const handleUsarDomFact = (e) => {
     setUsarDomFact(e.target.checked);
     if (e.target.checked) {
-      const partes = facturacion.domicilio.split(',');
       setEnvio({
-        calle: partes[0]?.trim() || facturacion.domicilio,
+        calle: facturacion.direccion,
         numero: '',
-        ciudad: partes[1]?.trim() || '',
-        provincia: partes[2]?.trim() || '',
-        codigoPostal: '',
+        ciudad: facturacion.ciudad,
+        provincia: facturacion.provincia,
+        codigoPostal: facturacion.codigoPostal,
       });
     } else {
       setEnvio(envioVacio);
@@ -73,6 +128,7 @@ function CheckoutPage() {
         metodoPago,
         tipoEntrega,
         datosFacturacion: facturacion,
+        notas,
         ...(tipoEntrega === 'envio' && {
           direccionEnvio: {
             calle: envio.calle,
@@ -179,19 +235,32 @@ function CheckoutPage() {
           {/* Datos de facturación */}
           <section className="checkout-seccion">
             <h2>Datos de facturación</h2>
-            <div className="form-group">
-              <label>Nombre completo</label>
-              <input
-                name="nombreCompleto"
-                value={facturacion.nombreCompleto}
-                onChange={handleFact}
-                required
-                placeholder={`${usuario.nombre} ${usuario.apellido}`}
-              />
+            <p className="checkout-nota-requerido">
+              Los campos marcados con <span className="campo-requerido">*</span> son obligatorios.
+            </p>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre <span className="campo-requerido">*</span></label>
+                <input
+                  name="nombre"
+                  value={facturacion.nombre}
+                  onChange={handleFact}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Apellido <span className="campo-requerido">*</span></label>
+                <input
+                  name="apellido"
+                  value={facturacion.apellido}
+                  onChange={handleFact}
+                  required
+                />
+              </div>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>DNI</label>
+                <label>DNI o CUIT <span className="campo-requerido">*</span></label>
                 <input
                   name="dni"
                   value={facturacion.dni}
@@ -201,15 +270,98 @@ function CheckoutPage() {
                 />
               </div>
               <div className="form-group">
-                <label>Domicilio</label>
+                <label>Correo electrónico <span className="campo-requerido">*</span></label>
                 <input
-                  name="domicilio"
-                  value={facturacion.domicilio}
+                  type="email"
+                  name="mail"
+                  value={facturacion.mail}
                   onChange={handleFact}
                   required
-                  placeholder="Calle, ciudad, provincia"
                 />
               </div>
+            </div>
+            <div className="form-group">
+              <label>Dirección <span className="campo-requerido">*</span></label>
+              <input
+                name="direccion"
+                value={facturacion.direccion}
+                onChange={handleFact}
+                required
+                placeholder="Calle y número"
+              />
+            </div>
+            <div className="form-group">
+              <label>Piso, departamento, etc.</label>
+              <input
+                name="pisoDepto"
+                value={facturacion.pisoDepto}
+                onChange={handleFact}
+                placeholder="Opcional"
+              />
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Localidad <span className="campo-requerido">*</span></label>
+                <input
+                  name="ciudad"
+                  value={facturacion.ciudad}
+                  onChange={handleFact}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Provincia <span className="campo-requerido">*</span></label>
+                <select
+                  name="provincia"
+                  value={facturacion.provincia}
+                  onChange={handleFact}
+                  required
+                >
+                  <option value="">Seleccioná una provincia</option>
+                  {PROVINCIAS.map((p) => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Código postal <span className="campo-requerido">*</span></label>
+                <input
+                  name="codigoPostal"
+                  value={facturacion.codigoPostal}
+                  onChange={handleFact}
+                  required
+                  placeholder="Ej: 3260"
+                  maxLength={8}
+                />
+                <span className="checkout-campo-ayuda">Solo números (sin letras)</span>
+              </div>
+              <div className="form-group">
+                <label>Celular <span className="campo-requerido">*</span></label>
+                <input
+                  type="tel"
+                  name="celular"
+                  value={facturacion.celular}
+                  onChange={handleFact}
+                  required
+                  placeholder="Ej: 3442123456"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Información adicional */}
+          <section className="checkout-seccion">
+            <h2>Información adicional</h2>
+            <div className="form-group">
+              <label>Notas para el pedido</label>
+              <textarea
+                value={notas}
+                onChange={(e) => setNotas(e.target.value)}
+                rows={3}
+                placeholder="Datos adicionales para la entrega. Indicar en caso de necesitar factura A"
+              />
             </div>
           </section>
 
@@ -264,6 +416,7 @@ function CheckoutPage() {
                       setTipoEntrega(valor);
                       setUsarDomFact(false);
                       setEnvio(envioVacio);
+                      setDomSeleccionado(null);
                     }}
                   />
                   {etiqueta}
@@ -273,11 +426,41 @@ function CheckoutPage() {
 
             {tipoEntrega === 'envio' && (
               <div className="checkout-envio">
+                {usuario?.direcciones?.length > 0 && (
+                  <div className="checkout-dom-guardados">
+                    <p className="checkout-dom-label">Domicilios guardados:</p>
+                    {usuario.direcciones.map((dir, idx) => (
+                      <label
+                        key={idx}
+                        className={`checkout-metodo ${domSeleccionado === idx ? 'activo' : ''}`}
+                      >
+                        <input
+                          type="radio"
+                          name="domGuardado"
+                          checked={domSeleccionado === idx}
+                          onChange={() => {
+                            setDomSeleccionado(idx);
+                            setUsarDomFact(false);
+                            setEnvio({
+                              calle: dir.calle,
+                              numero: String(dir.numero),
+                              ciudad: dir.ciudad,
+                              provincia: dir.provincia,
+                              codigoPostal: dir.codigoPostal,
+                            });
+                          }}
+                        />
+                        {dir.calle} {dir.numero}, {dir.ciudad} ({dir.codigoPostal})
+                      </label>
+                    ))}
+                  </div>
+                )}
+
                 <label className="checkout-checkbox">
                   <input
                     type="checkbox"
                     checked={usarDomFact}
-                    onChange={handleUsarDomFact}
+                    onChange={(e) => { handleUsarDomFact(e); setDomSeleccionado(null); }}
                   />
                   Usar domicilio de facturación
                 </label>

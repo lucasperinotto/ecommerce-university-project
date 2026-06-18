@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import useTitulo from '../hooks/useTitulo';
 
 function RegisterPage() {
+  useTitulo('Crear cuenta');
   const { register } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -42,29 +44,27 @@ function RegisterPage() {
       <div className="auth-box">
         <h1 className="auth-titulo">Crear cuenta</h1>
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="nombre">Nombre</label>
-              <input
-                id="nombre"
-                type="text"
-                name="nombre"
-                value={form.nombre}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="apellido">Apellido</label>
-              <input
-                id="apellido"
-                type="text"
-                name="apellido"
-                value={form.apellido}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="nombre">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              name="nombre"
+              value={form.nombre}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="apellido">Apellido</label>
+            <input
+              id="apellido"
+              type="text"
+              name="apellido"
+              value={form.apellido}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className="form-group">
             <label htmlFor="mail">Correo electrónico</label>

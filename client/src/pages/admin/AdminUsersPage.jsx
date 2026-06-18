@@ -1,11 +1,21 @@
 import { Fragment, useEffect, useState } from 'react';
-import { getAll, updateProfile, deleteUser, restoreUser } from '../../services/usuariosService';
+import { getAll, updateProfile, crearUsuario, deleteUser, restoreUser } from '../../services/usuariosService';
 import Spinner from '../../components/Spinner';
+import ModalConfirm from '../../components/ModalConfirm';
+import { useToast } from '../../context/ToastContext';
+import useTitulo from '../../hooks/useTitulo';
 import './AdminPage.css';
 
 const FORM_VACIO = { nombre: '', apellido: '' };
+const FORM_NUEVO_VACIO = { nombre: '', apellido: '', mail: '', contrasena: '', confirmar: '', rol: 'cliente' };
 
 function AdminUsersPage() {
+  useTitulo('Admin - Usuarios');
+  const { showToast } = useToast();
+  const [modal, setModal] = useState(null);
+  const confirmar = (mensaje, accion) => setModal({ mensaje, accion });
+  const cerrarModal = () => setModal(null);
+  const ejecutar = () => { modal.accion(); cerrarModal(); };
   const [usuarios, setUsuarios] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
@@ -13,6 +23,10 @@ function AdminUsersPage() {
   const [form, setForm] = useState(FORM_VACIO);
   const [formError, setFormError] = useState('');
   const [guardando, setGuardando] = useState(false);
+  const [creandoNuevo, setCreandoNuevo] = useState(false);
+  const [formNuevo, setFormNuevo] = useState(FORM_NUEVO_VACIO);
+  const [formNuevoError, setFormNuevoError] = useState('');
+  const [guardandoNuevo, setGuardandoNuevo] = useState(false);
 
   const fetchUsuarios = async () => {
     try {
@@ -49,6 +63,7 @@ function AdminUsersPage() {
       await updateProfile(editandoId, form);
       await fetchUsuarios();
       cancelar();
+      showToast('Usuario actualizado con éxito.');
     } catch (err) {
       setFormError(err.response?.data?.error || 'Error al actualizar el usuario.');
     } finally {
@@ -56,13 +71,36 @@ function AdminUsersPage() {
     }
   };
 
-  const handleBaja = async (id) => {
-    if (!confirm('¿Dar de baja este usuario?')) return;
+  const handleBaja = (id) => {
+    confirmar('¿Dar de baja este usuario?', async () => {
+      try {
+        await deleteUser(id);
+        await fetchUsuarios();
+        showToast('Usuario dado de baja.');
+      } catch {
+        showToast('Error al dar de baja el usuario.', 'error');
+      }
+    });
+  };
+
+  const handleCrearNuevo = async (e) => {
+    e.preventDefault();
+    setFormNuevoError('');
+    if (formNuevo.contrasena !== formNuevo.confirmar) {
+      setFormNuevoError('Las contraseñas no coinciden.');
+      return;
+    }
+    setGuardandoNuevo(true);
     try {
-      await deleteUser(id);
+      await crearUsuario(formNuevo);
       await fetchUsuarios();
-    } catch {
-      alert('Error al dar de baja el usuario.');
+      setCreandoNuevo(false);
+      setFormNuevo(FORM_NUEVO_VACIO);
+      showToast('Usuario creado con éxito.');
+    } catch (err) {
+      setFormNuevoError(err.response?.data?.error || 'Error al crear el usuario.');
+    } finally {
+      setGuardandoNuevo(false);
     }
   };
 
@@ -70,8 +108,9 @@ function AdminUsersPage() {
     try {
       await restoreUser(id);
       await fetchUsuarios();
+      showToast('Usuario restaurado con éxito.');
     } catch {
-      alert('Error al restaurar el usuario.');
+      showToast('Error al restaurar el usuario.', 'error');
     }
   };
 
@@ -80,9 +119,61 @@ function AdminUsersPage() {
 
   return (
     <main className="admin-page">
+      {modal && <ModalConfirm mensaje={modal.mensaje} onConfirmar={ejecutar} onCancelar={cerrarModal} />}
       <div className="admin-header">
         <h1>Gestión de usuarios</h1>
+        <button className="admin-btn-nuevo" onClick={() => { setCreandoNuevo(true); setFormNuevoError(''); }}>
+          + Nuevo usuario
+        </button>
       </div>
+
+      {creandoNuevo && (
+        <div className="admin-form-wrap">
+          <h2>Nuevo usuario</h2>
+          <form onSubmit={handleCrearNuevo} className="admin-form">
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre</label>
+                <input name="nombre" value={formNuevo.nombre} onChange={(e) => setFormNuevo({ ...formNuevo, nombre: e.target.value })} required />
+              </div>
+              <div className="form-group">
+                <label>Apellido</label>
+                <input name="apellido" value={formNuevo.apellido} onChange={(e) => setFormNuevo({ ...formNuevo, apellido: e.target.value })} required />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Correo electrónico</label>
+              <input type="email" name="mail" value={formNuevo.mail} onChange={(e) => setFormNuevo({ ...formNuevo, mail: e.target.value })} required />
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="contrasena" value={formNuevo.contrasena} onChange={(e) => setFormNuevo({ ...formNuevo, contrasena: e.target.value })} required minLength={6} />
+              </div>
+              <div className="form-group">
+                <label>Confirmar contraseña</label>
+                <input type="password" name="confirmar" value={formNuevo.confirmar} onChange={(e) => setFormNuevo({ ...formNuevo, confirmar: e.target.value })} required />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Rol</label>
+              <select name="rol" value={formNuevo.rol} onChange={(e) => setFormNuevo({ ...formNuevo, rol: e.target.value })}>
+                <option value="cliente">Cliente</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            {formNuevoError && <p className="auth-error">{formNuevoError}</p>}
+            <div className="admin-form-acciones">
+              <button type="submit" className="admin-btn-guardar" disabled={guardandoNuevo}>
+                {guardandoNuevo ? 'Guardando...' : 'Crear usuario'}
+              </button>
+              <button type="button" className="admin-btn-cancelar" onClick={() => { setCreandoNuevo(false); setFormNuevo(FORM_NUEVO_VACIO); }}>
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       <div className="admin-tabla-wrap">
         <table className="admin-tabla">

@@ -1,17 +1,19 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import useTitulo from '../hooks/useTitulo';
 import './OrderDetailPage.css';
 
 function OrderDetailPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const orden = state?.orden;
+  useTitulo(orden ? `Orden #${orden._id?.slice(-8)}` : 'Detalle de orden');
 
   if (!orden) {
     navigate('/mis-ordenes');
     return null;
   }
 
-  const { _id, estado, fechaCreacion, metodoPago, direccionEnvio, items, precioTotal } = orden;
+  const { _id, estado, createdAt, metodoPago, direccionEnvio, items, precioTotal } = orden;
 
   return (
     <main className="orden-detalle">
@@ -70,8 +72,8 @@ function OrderDetailPage() {
           <div className="orden-detalle-seccion">
             <h2>Fecha</h2>
             <p>
-              {fechaCreacion
-                ? new Date(fechaCreacion).toLocaleDateString('es-AR', {
+              {createdAt
+                ? new Date(createdAt).toLocaleDateString('es-AR', {
                     day: '2-digit',
                     month: 'long',
                     year: 'numeric',

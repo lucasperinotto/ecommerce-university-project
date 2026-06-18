@@ -316,6 +316,38 @@
   color: var(--gris-oscuro);
 }
 
+.campo-requerido {
+  color: #c0392b;
+}
+
+.checkout-nota-requerido {
+  font-size: 0.82rem;
+  color: var(--gris-medio);
+  margin-top: -8px;
+}
+
+.checkout-campo-ayuda {
+  font-size: 0.78rem;
+  color: var(--gris-medio);
+  margin-top: 4px;
+}
+
+/* ── Domicilios guardados ── */
+.checkout-dom-guardados {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkout-dom-label {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--gris-medio);
+  margin-bottom: 4px;
+}
+
 @media (max-width: 768px) {
   .checkout-contenido {
     grid-template-columns: 1fr;

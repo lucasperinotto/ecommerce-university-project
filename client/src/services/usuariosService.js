@@ -6,6 +6,12 @@ const headers = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
 });
 
+export const crearUsuario = (datos) =>
+  axios.post(`${API}/usuarios`, datos, headers());
+
+export const actualizarDirecciones = (id, direcciones) =>
+  axios.patch(`${API}/usuarios/${id}/address`, { direcciones }, headers());
+
 export const getProfile = (id) =>
   axios.get(`${API}/usuarios/${id}`, headers());
 

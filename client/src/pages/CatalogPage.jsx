@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { getProductos } from '../services/productosService';
 import ProductCard from '../components/ProductCard';
 import Spinner from '../components/Spinner';
+import useTitulo from '../hooks/useTitulo';
 import './CatalogPage.css';
 
 function CatalogPage() {
@@ -11,6 +12,7 @@ function CatalogPage() {
   const [error, setError] = useState(null);
   const [searchParams] = useSearchParams();
   const categoriaFiltro = searchParams.get('categoria');
+  useTitulo(categoriaFiltro ? `Catálogo - ${categoriaFiltro.charAt(0).toUpperCase()}${categoriaFiltro.slice(1)}` : 'Catálogo');
 
   useEffect(() => {
     const fetchProductos = async () => {

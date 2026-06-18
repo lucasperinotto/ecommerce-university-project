@@ -22,6 +22,6 @@ router.post('/', crearUsuario);
 router.put('/:id', authMiddleware, actualizarUsuario);
 router.patch('/:id/address', authMiddleware, agregarDireccion);
 router.delete('/:id', authMiddleware, adminMiddleware, bajaLogicaUsuario);
-router.patch('/:id/restore', authMiddleware, restaurarUsuario)
+router.patch('/:id/restore', authMiddleware, adminMiddleware, restaurarUsuario)
 
 module.exports = router;

@@ -22,8 +22,8 @@ export function AuthProvider({ children }) {
     const { data } = await registerSvc(datos);
     if (data.token) {
       localStorage.setItem('token', data.token);
-      localStorage.setItem('usuario', JSON.stringify(data.usuario));
-      setUsuario(data.usuario);
+      localStorage.setItem('usuario', JSON.stringify(data.usuarioResponse));
+      setUsuario(data.usuarioResponse);
     }
     return data;
   };

@@ -7,6 +7,9 @@ import {
   restaurarProducto,
 } from '../../services/productosService';
 import Spinner from '../../components/Spinner';
+import ModalConfirm from '../../components/ModalConfirm';
+import { useToast } from '../../context/ToastContext';
+import useTitulo from '../../hooks/useTitulo';
 import './AdminPage.css';
 
 const CATEGORIAS = ['anillos', 'aros', 'carteras', 'collares'];
@@ -20,6 +23,8 @@ const FORM_VACIO = {
 };
 
 function AdminProductsPage() {
+  useTitulo('Admin - Productos');
+  const { showToast } = useToast();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
@@ -28,6 +33,10 @@ function AdminProductsPage() {
   const [form, setForm] = useState(FORM_VACIO);
   const [formError, setFormError] = useState('');
   const [guardando, setGuardando] = useState(false);
+  const [modal, setModal] = useState(null);
+  const confirmar = (mensaje, accion) => setModal({ mensaje, accion });
+  const cerrarModal = () => setModal(null);
+  const ejecutar = () => { modal.accion(); cerrarModal(); };
 
   const fetchProductos = async () => {
     try {
@@ -85,8 +94,10 @@ function AdminProductsPage() {
       };
       if (editandoId) {
         await actualizarProducto(editandoId, datos);
+        showToast('Producto actualizado con éxito.');
       } else {
         await crearProducto(datos);
+        showToast('Producto creado con éxito.');
       }
       await fetchProductos();
       cancelar();
@@ -97,22 +108,25 @@ function AdminProductsPage() {
     }
   };
 
-  const handleBaja = async (id) => {
-    if (!confirm('¿Dar de baja este producto?')) return;
-    try {
-      await bajaLogicaProducto(id);
-      await fetchProductos();
-    } catch {
-      alert('Error al dar de baja el producto.');
-    }
+  const handleBaja = (id) => {
+    confirmar('¿Dar de baja este producto?', async () => {
+      try {
+        await bajaLogicaProducto(id);
+        await fetchProductos();
+        showToast('Producto dado de baja.');
+      } catch {
+        showToast('Error al dar de baja el producto.', 'error');
+      }
+    });
   };
 
   const handleRestaurar = async (id) => {
     try {
       await restaurarProducto(id);
       await fetchProductos();
+      showToast('Producto restaurado con éxito.');
     } catch {
-      alert('Error al restaurar el producto.');
+      showToast('Error al restaurar el producto.', 'error');
     }
   };
 
@@ -121,6 +135,7 @@ function AdminProductsPage() {
 
   return (
     <main className="admin-page">
+      {modal && <ModalConfirm mensaje={modal.mensaje} onConfirmar={ejecutar} onCancelar={cerrarModal} />}
       <div className="admin-header">
         <h1>Gestión de productos</h1>
         <button className="admin-btn-nuevo" onClick={abrirCrear}>

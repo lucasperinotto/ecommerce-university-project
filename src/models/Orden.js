@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const ordenSchema = new mongoose.Schema({
     idUsuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
     direccionEnvio: {
-        calle: { type: String, required: true },
-        numero: { type: Number, required: true },
-        ciudad: { type: String, required: true },
-        provincia: { type: String, required: true },
-        codigoPostal: { type: String, required: true }
+        calle: { type: String, default: '' },
+        numero: { type: Number, default: 0 },
+        ciudad: { type: String, default: '' },
+        provincia: { type: String, default: '' },
+        codigoPostal: { type: String, default: '' }
     },
     items: [
         {
@@ -18,7 +18,7 @@ const ordenSchema = new mongoose.Schema({
         }
     ],
     precioTotal: { type: Number, required: true, min: 0 },
-    metodoPago: { type: String, enum: ['tarjeta', 'paypal', 'efectivo'], required: true },
+    metodoPago: { type: String, enum: ['efectivo', 'transferencia', 'tarjeta', 'paypal'], required: true },
     estado: { type: String, enum: ['pendiente de pago', 'procesando', 'enviado', 'entregado', 'cancelado'], default: 'pendiente de pago' }
 }, { timestamps: true });
 

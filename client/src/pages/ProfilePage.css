@@ -108,6 +108,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
   padding: 14px 0;
   border-bottom: 1px solid var(--gris-claro);
 }
@@ -290,6 +291,72 @@
   font-size: 0.9rem;
   text-align: center;
   padding: 20px 0;
+}
+
+.campo-requerido {
+  color: #c0392b;
+}
+
+.checkout-nota-requerido {
+  font-size: 0.82rem;
+  color: var(--gris-medio);
+  margin-top: -8px;
+}
+
+/* ── Domicilios ── */
+.perfil-dom-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.perfil-dom-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--gris-claro);
+  border-radius: 8px;
+  padding: 14px 18px;
+  gap: 12px;
+}
+
+.perfil-dom-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.perfil-dom-calle {
+  font-size: 0.95rem;
+  color: var(--gris-oscuro);
+}
+
+.perfil-dom-sub {
+  font-size: 0.82rem;
+  color: var(--gris-medio);
+}
+
+.perfil-btn-dom-eliminar {
+  background: none;
+  border: 1px solid var(--gris-claro);
+  color: var(--gris-medio);
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.perfil-btn-dom-eliminar:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+
+.perfil-form-dom {
+  margin-top: 16px;
 }
 
 /* ── Responsive ── */

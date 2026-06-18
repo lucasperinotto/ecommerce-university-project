@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getTodasOrdenes } from '../../services/ordenesService';
 import Spinner from '../../components/Spinner';
+import useTitulo from '../../hooks/useTitulo';
 import './AdminPage.css';
 
 function AdminOrdersPage() {
+  useTitulo('Admin - Órdenes');
   const [ordenes, setOrdenes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');

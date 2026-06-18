@@ -1,23 +1,26 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { forgotPassword } from '../services/authService';
+import { useToast } from '../context/ToastContext';
+import useTitulo from '../hooks/useTitulo';
 
 function ForgotPasswordPage() {
+  useTitulo('Recuperar contraseña');
+  const { showToast } = useToast();
   const [mail, setMail] = useState('');
-  const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
+  const [enviado, setEnviado] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setMensaje('');
     setCargando(true);
     try {
       await forgotPassword(mail);
-      setMensaje('Se enviará un enlace de recuperación al correo electrónico ingresado.');
+      setEnviado(true);
+      showToast('¡Enlace enviado! Revisá tu correo electrónico.');
     } catch (err) {
-      console.log(err);
       setError(err.response?.data?.error || 'Error al enviar el correo.');
     } finally {
       setCargando(false);
@@ -31,8 +34,8 @@ function ForgotPasswordPage() {
         <p style={{ textAlign: 'center', color: 'var(--gris-medio)', marginBottom: '28px', fontSize: '0.9rem' }}>
           Ingresá tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
         </p>
-        {mensaje ? (
-          <p className="auth-success">{mensaje}</p>
+        {enviado ? (
+          <p className="auth-success">Revisá tu bandeja de entrada. Si el correo está registrado, vas a recibir el enlace en unos minutos.</p>
         ) : (
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">

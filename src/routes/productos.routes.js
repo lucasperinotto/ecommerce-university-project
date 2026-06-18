@@ -22,6 +22,6 @@ router.post('/', authMiddleware, adminMiddleware, crearProducto);
 router.put('/:id', authMiddleware, adminMiddleware, actualizarProducto);
 router.delete('/:id', authMiddleware, adminMiddleware, bajaLogicaProducto);
 router.patch('/:id/restore', authMiddleware, adminMiddleware, restaurarProducto);
-router.patch('/:id/stock', ajustarStock);
+router.patch('/:id/stock', authMiddleware, ajustarStock);
 
 module.exports = router;

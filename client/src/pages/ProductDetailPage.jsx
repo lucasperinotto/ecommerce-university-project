@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
 import { useToast } from '../context/ToastContext';
 import Spinner from '../components/Spinner';
+import useTitulo from '../hooks/useTitulo';
 import './ProductDetailPage.css';
 import axios from 'axios';
 
@@ -16,6 +17,7 @@ function ProductDetailPage() {
   const [error, setError] = useState(null);
   const [imagenActiva, setImagenActiva] = useState(0);
   const [agregado, setAgregado] = useState(false);
+  useTitulo(producto?.nombre || 'Producto');
 
   useEffect(() => {
     const fetchProducto = async () => {

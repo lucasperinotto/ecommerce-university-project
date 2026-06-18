@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { updateProfile } from '../services/usuariosService';
+import { updateProfile, actualizarDirecciones } from '../services/usuariosService';
 import { getMisOrdenes } from '../services/ordenesService';
 import Spinner from '../components/Spinner';
+import useTitulo from '../hooks/useTitulo';
 import './ProfilePage.css';
 
 function ProfilePage() {
+  useTitulo('Mi perfil');
   const { usuario, actualizarUsuario } = useAuth();
   const { showToast } = useToast();
   const [editando, setEditando] = useState(false);
@@ -19,6 +21,11 @@ function ProfilePage() {
   const [cargando, setCargando] = useState(false);
   const [ordenes, setOrdenes] = useState([]);
   const [cargandoOrdenes, setCargandoOrdenes] = useState(true);
+  const [direcciones, setDirecciones] = useState(usuario?.direcciones || []);
+  const [agregandoDom, setAgregandoDom] = useState(false);
+  const [formDom, setFormDom] = useState({ calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '' });
+  const [errorDom, setErrorDom] = useState('');
+  const [guardandoDom, setGuardandoDom] = useState(false);
 
   useEffect(() => {
     const fetchOrdenes = async () => {
@@ -36,6 +43,62 @@ function ProfilePage() {
   }, [usuario._id]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const capitalizar = (s) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+
+  const buscarLocalidadDom = async (cp) => {
+    if (cp.length < 4) return;
+    try {
+      const res = await fetch(`https://api.zippopotam.us/AR/${cp}`);
+      if (!res.ok) return;
+      const json = await res.json();
+      const lugar = json.places?.[0];
+      if (lugar) {
+        setFormDom((prev) => ({
+          ...prev,
+          ciudad: capitalizar(lugar['place name']),
+          provincia: capitalizar(lugar['state']),
+        }));
+      }
+    } catch {}
+  };
+
+  const handleFormDom = (e) => {
+    const { name, value } = e.target;
+    setFormDom((prev) => ({ ...prev, [name]: value }));
+    if (name === 'codigoPostal') buscarLocalidadDom(value);
+  };
+
+  const handleAgregarDom = async (e) => {
+    e.preventDefault();
+    setErrorDom('');
+    setGuardandoDom(true);
+    try {
+      const nuevas = [...direcciones, { ...formDom }];
+      const { data } = await actualizarDirecciones(usuario._id, nuevas);
+      const guardadas = data.direcciones || nuevas;
+      actualizarUsuario({ direcciones: guardadas });
+      setDirecciones(guardadas);
+      setAgregandoDom(false);
+      setFormDom({ calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '' });
+      showToast('Domicilio guardado con éxito.');
+    } catch {
+      setErrorDom('Error al guardar el domicilio.');
+    } finally {
+      setGuardandoDom(false);
+    }
+  };
+
+  const handleEliminarDom = async (idx) => {
+    const nuevas = direcciones.filter((_, i) => i !== idx);
+    try {
+      const { data } = await actualizarDirecciones(usuario._id, nuevas);
+      const guardadas = data.direcciones || nuevas;
+      actualizarUsuario({ direcciones: guardadas });
+      setDirecciones(guardadas);
+      showToast('Domicilio eliminado.');
+    } catch {}
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -151,6 +214,91 @@ function ProfilePage() {
                   className="perfil-btn-cancelar"
                   onClick={() => setEditando(false)}
                 >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          )}
+        </section>
+
+        {/* Mis domicilios */}
+        <section className="perfil-seccion">
+          <div className="perfil-seccion-titulo">
+            <h2>Mis domicilios</h2>
+            {!agregandoDom && (
+              <button className="perfil-btn-editar" onClick={() => { setAgregandoDom(true); setErrorDom(''); }}>
+                + Agregar
+              </button>
+            )}
+          </div>
+
+          {direcciones.length === 0 && !agregandoDom && (
+            <p className="perfil-estado">No tenés domicilios guardados.</p>
+          )}
+
+          <div className="perfil-dom-lista">
+            {direcciones.map((dir, idx) => (
+              <div key={idx} className="perfil-dom-card">
+                <div className="perfil-dom-info">
+                  <span className="perfil-dom-calle">
+                    {dir.calle} {dir.numero}
+                    {dir.piso && `, piso ${dir.piso}`}
+                    {dir.depto && ` depto ${dir.depto}`}
+                  </span>
+                  <span className="perfil-dom-sub">{dir.ciudad}, {dir.provincia} — CP {dir.codigoPostal}</span>
+                </div>
+                <button className="perfil-btn-dom-eliminar" onClick={() => handleEliminarDom(idx)}>
+                  Eliminar
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {agregandoDom && (
+            <form onSubmit={handleAgregarDom} className="auth-form perfil-form-dom">
+              <p className="checkout-nota-requerido">
+                Los campos marcados con <span className="campo-requerido">*</span> son obligatorios.
+              </p>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Calle <span className="campo-requerido">*</span></label>
+                  <input name="calle" value={formDom.calle} onChange={handleFormDom} required placeholder="Av. San Martín" />
+                </div>
+                <div className="form-group">
+                  <label>Número <span className="campo-requerido">*</span></label>
+                  <input name="numero" value={formDom.numero} onChange={handleFormDom} required placeholder="1234" />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Piso</label>
+                  <input name="piso" value={formDom.piso} onChange={handleFormDom} />
+                </div>
+                <div className="form-group">
+                  <label>Departamento</label>
+                  <input name="depto" value={formDom.depto} onChange={handleFormDom} />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Código postal <span className="campo-requerido">*</span></label>
+                  <input name="codigoPostal" value={formDom.codigoPostal} onChange={handleFormDom} required placeholder="Ej: 3260" maxLength={8} />
+                </div>
+                <div className="form-group">
+                  <label>Ciudad <span className="campo-requerido">*</span></label>
+                  <input name="ciudad" value={formDom.ciudad} onChange={handleFormDom} required />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Provincia <span className="campo-requerido">*</span></label>
+                <input name="provincia" value={formDom.provincia} onChange={handleFormDom} required />
+              </div>
+              {errorDom && <p className="auth-error">{errorDom}</p>}
+              <div className="perfil-acciones">
+                <button type="submit" className="auth-btn" disabled={guardandoDom}>
+                  {guardandoDom ? 'Guardando...' : 'Guardar domicilio'}
+                </button>
+                <button type="button" className="perfil-btn-cancelar" onClick={() => { setAgregandoDom(false); setFormDom({ calle: '', numero: '', piso: '', depto: '', codigoPostal: '', ciudad: '', provincia: '' }); }}>
                   Cancelar
                 </button>
               </div>

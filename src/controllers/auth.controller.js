@@ -21,6 +21,10 @@ const login = async (req, res) => {
             return res.status(401).json({ error: 'El correo electrónico ingresado no tiene un usuario asociado.' });
         }
 
+        if (usuario.estado === 'inactivo') {
+            return res.status(401).json({ error: 'Esta cuenta fue dada de baja. Contactá con el administrador.' });
+        }
+
         const igual = await bcrypt.compare(contrasena, usuario.contrasena);
         if (!igual) {
             return res.status(401).json({ error: 'Credenciales inválidas.' });
