@@ -6,6 +6,7 @@ import { useToast } from '../context/ToastContext';
 import { crearOrden } from '../services/ordenesService';
 import { ajustarStock } from '../services/productosService';
 import useTitulo from '../hooks/useTitulo';
+import { soloLetras, soloNumeros } from '../utils/inputFilters';
 import './CheckoutPage.css';
 
 const DATOS_BANCARIOS = {
@@ -84,13 +85,19 @@ function CheckoutPage() {
   };
 
   const handleFact = (e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
+    if (name === 'dni' || name === 'codigoPostal' || name === 'celular') value = soloNumeros(value);
+    if (name === 'nombre' || name === 'apellido' || name === 'ciudad') value = soloLetras(value);
     setFacturacion((prev) => ({ ...prev, [name]: value }));
     if (name === 'codigoPostal') buscarLocalidad(value, setFacturacion);
   };
 
   const handleEnvio = (e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
+    if (name === 'numero' || name === 'codigoPostal') value = soloNumeros(value);
+    if (name === 'ciudad' || name === 'provincia') value = soloLetras(value);
     setEnvio((prev) => ({ ...prev, [name]: value }));
     if (name === 'codigoPostal') buscarLocalidad(value, setEnvio);
   };
@@ -503,7 +510,7 @@ function CheckoutPage() {
                 {!usarDomFact && (
                   <div className="checkout-envio-campos">
                     <div className="form-group">
-                      <label>Calle</label>
+                      <label>Calle <span className="campo-requerido">*</span></label>
                       <input
                         name="calle"
                         value={envio.calle}
@@ -513,7 +520,7 @@ function CheckoutPage() {
                     </div>
                     <div className="form-row">
                       <div className="form-group">
-                        <label>Número</label>
+                        <label>Número <span className="campo-requerido">*</span></label>
                         <input
                           name="numero"
                           type="number"
@@ -524,7 +531,7 @@ function CheckoutPage() {
                         />
                       </div>
                       <div className="form-group">
-                        <label>Código postal</label>
+                        <label>Código postal <span className="campo-requerido">*</span></label>
                         <input
                           name="codigoPostal"
                           value={envio.codigoPostal}
@@ -535,7 +542,7 @@ function CheckoutPage() {
                     </div>
                     <div className="form-row">
                       <div className="form-group">
-                        <label>Ciudad</label>
+                        <label>Ciudad <span className="campo-requerido">*</span></label>
                         <input
                           name="ciudad"
                           value={envio.ciudad}
@@ -544,7 +551,7 @@ function CheckoutPage() {
                         />
                       </div>
                       <div className="form-group">
-                        <label>Provincia</label>
+                        <label>Provincia <span className="campo-requerido">*</span></label>
                         <input
                           name="provincia"
                           value={envio.provincia}

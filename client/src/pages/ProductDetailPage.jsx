@@ -2,16 +2,18 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
+import { getProductoById } from '../services/productosService';
 import Spinner from '../components/Spinner';
 import useTitulo from '../hooks/useTitulo';
 import './ProductDetailPage.css';
-import axios from 'axios';
 
 function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { agregarItem, items } = useCarrito();
   const { showToast } = useToast();
+  const { usuario } = useAuth();
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -22,8 +24,8 @@ function ProductDetailPage() {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/productos/${id}`);
-        setProducto(response.data);
+        const { data } = await getProductoById(id);
+        setProducto(data);
       } catch (err) {
         setError('Producto no encontrado.');
         console.error(err);
@@ -100,13 +102,15 @@ function ProductDetailPage() {
             </p>
           )}
 
-          <button
-            className="detalle-btn"
-            disabled={noDisponible}
-            onClick={handleAgregar}
-          >
-            {noDisponible ? 'Sin stock' : agregado ? '¡Agregado!' : 'Agregar al carrito'}
-          </button>
+          {usuario?.rol !== 'admin' && (
+            <button
+              className="detalle-btn"
+              disabled={noDisponible}
+              onClick={handleAgregar}
+            >
+              {noDisponible ? 'Sin stock' : agregado ? '¡Agregado!' : 'Agregar al carrito'}
+            </button>
+          )}
         </div>
       </div>
     </main>

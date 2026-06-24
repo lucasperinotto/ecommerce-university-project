@@ -60,7 +60,7 @@ function ResetPasswordPage() {
         <h1 className="auth-titulo">Nueva contraseña</h1>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="nuevaContrasena">Nueva contraseña</label>
+            <label htmlFor="nuevaContrasena">Nueva contraseña <span className="campo-requerido">*</span></label>
             <div className="input-password-wrap">
               <input
                 id="nuevaContrasena"
@@ -84,7 +84,7 @@ function ResetPasswordPage() {
             </div>
           </div>
           <div className="form-group">
-            <label htmlFor="confirmar">Confirmar contraseña</label>
+            <label htmlFor="confirmar">Confirmar contraseña <span className="campo-requerido">*</span></label>
             <div className="input-password-wrap">
               <input
                 id="confirmar"

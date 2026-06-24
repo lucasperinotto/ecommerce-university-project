@@ -6,6 +6,8 @@ import { updateProfile, actualizarDirecciones } from '../services/usuariosServic
 import { getMisOrdenes } from '../services/ordenesService';
 import Spinner from '../components/Spinner';
 import useTitulo from '../hooks/useTitulo';
+import { soloLetras, soloNumeros } from '../utils/inputFilters';
+import { labelEstado } from '../utils/ordenLabels';
 import './ProfilePage.css';
 
 const PROVINCIAS = [
@@ -61,7 +63,7 @@ function ProfilePage() {
     fetchOrdenes();
   }, [usuario._id, usuario?.rol]);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: soloLetras(e.target.value) });
 
   const capitalizar = (s) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -83,7 +85,10 @@ function ProfilePage() {
   };
 
   const handleFormDom = (e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
+    if (name === 'numero' || name === 'codigoPostal') value = soloNumeros(value);
+    if (name === 'ciudad' || name === 'provincia') value = soloLetras(value);
     setFormDom((prev) => ({ ...prev, [name]: value }));
     if (name === 'codigoPostal') buscarLocalidadDom(value);
   };
@@ -154,17 +159,6 @@ function ProfilePage() {
 
   const iniciales = `${usuario?.nombre?.[0] || ''}${usuario?.apellido?.[0] || ''}`.toUpperCase();
 
-  const labelEstado = (estado) => {
-    const map = {
-      'pendiente de pago': 'Pendiente de pago',
-      procesando: 'En preparación',
-      enviado: 'Enviado',
-      entregado: 'Entregado',
-      cancelado: 'Cancelado',
-    };
-    return map[estado] || estado;
-  };
-
   return (
     <main className="perfil-container">
 
@@ -220,7 +214,7 @@ function ProfilePage() {
             <form onSubmit={handleSubmit} className="auth-form perfil-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="nombre">Nombre</label>
+                  <label htmlFor="nombre">Nombre <span className="campo-requerido">*</span></label>
                   <input
                     id="nombre"
                     type="text"
@@ -231,7 +225,7 @@ function ProfilePage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="apellido">Apellido</label>
+                  <label htmlFor="apellido">Apellido <span className="campo-requerido">*</span></label>
                   <input
                     id="apellido"
                     type="text"

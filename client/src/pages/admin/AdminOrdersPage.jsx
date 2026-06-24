@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getTodasOrdenes } from '../../services/ordenesService';
 import Spinner from '../../components/Spinner';
 import useTitulo from '../../hooks/useTitulo';
+import { labelEstado, labelMetodoPago } from '../../utils/ordenLabels';
 import './AdminPage.css';
 
 function AdminOrdersPage() {
@@ -60,10 +61,10 @@ function AdminOrdersPage() {
                   </td>
                   <td>{o.items?.length ?? 0} item{o.items?.length !== 1 ? 's' : ''}</td>
                   <td>${Number(o.precioTotal).toLocaleString('es-AR')}</td>
-                  <td>{o.metodoPago}</td>
+                  <td>{labelMetodoPago(o.metodoPago)}</td>
                   <td>
                     <span className={`admin-badge orden-estado--${o.estado?.replace(/ /g, '-')}`}>
-                      {o.estado}
+                      {labelEstado(o.estado)}
                     </span>
                   </td>
                   <td>

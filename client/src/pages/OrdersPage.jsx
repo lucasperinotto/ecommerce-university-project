@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { getMisOrdenes } from '../services/ordenesService';
 import Spinner from '../components/Spinner';
 import useTitulo from '../hooks/useTitulo';
+import { labelEstado } from '../utils/ordenLabels';
 import './OrdersPage.css';
 
 function OrdersPage() {
@@ -36,6 +37,9 @@ function OrdersPage() {
 
   return (
     <main className="ordenes">
+      <Link to="/perfil" className="ordenes-volver">
+        ← Volver a mi perfil
+      </Link>
       <h1 className="ordenes-titulo">Mis pedidos</h1>
 
       {ordenes.length === 0 ? (
@@ -57,7 +61,7 @@ function OrdersPage() {
               <div className="orden-card-header">
                 <span className="orden-id">Orden #{orden._id?.slice(-8)}</span>
                 <span className={`orden-estado orden-estado--${orden.estado?.replace(/ /g, '-')}`}>
-                  {orden.estado}
+                  {labelEstado(orden.estado)}
                 </span>
               </div>
               <div className="orden-card-body">

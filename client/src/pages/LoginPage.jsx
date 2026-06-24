@@ -41,7 +41,7 @@ function LoginPage() {
         <h1 className="auth-titulo">Iniciar sesión</h1>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="mail">Correo electrónico</label>
+            <label htmlFor="mail">Correo electrónico <span className="campo-requerido">*</span></label>
             <input
               id="mail"
               type="email"
@@ -53,7 +53,7 @@ function LoginPage() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="contrasena">Contraseña</label>
+            <label htmlFor="contrasena">Contraseña <span className="campo-requerido">*</span></label>
             <div className="input-password-wrap">
               <input
                 id="contrasena"

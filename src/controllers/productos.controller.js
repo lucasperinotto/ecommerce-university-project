@@ -33,7 +33,7 @@ const obtenerProductoPorId = async (req, res) => {
 // Endpoint "Crear Producto"
 const crearProducto = async (req, res) => {
     const {nombre, precio, cantidad, imagen, categoria, descripcion} = req.body;
-    if (!nombre || !precio || !cantidad || !categoria || !descripcion) {
+    if (!nombre || !precio || !cantidad || !imagen || !categoria || !descripcion) {
         return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 

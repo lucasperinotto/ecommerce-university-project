@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
 import ModalConfirm from '../components/ModalConfirm';
 import useTitulo from '../hooks/useTitulo';
-import '../components/ModalConfirm.css';
 import './CartPage.css';
 
 function CartPage() {

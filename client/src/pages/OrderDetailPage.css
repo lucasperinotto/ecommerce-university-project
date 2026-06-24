@@ -70,10 +70,6 @@
   padding-bottom: 12px;
 }
 
-.orden-detalle-item:last-of-type {
-  border-bottom: none;
-}
-
 .orden-detalle-item-nombre {
   flex: 1;
 }
@@ -93,9 +89,7 @@
   display: flex;
   justify-content: space-between;
   font-weight: bold;
-  border-top: 1px solid var(--gris-claro);
-  padding-top: 14px;
-  margin-top: 4px;
+  padding-top: 2px;
 }
 
 .orden-detalle-info {

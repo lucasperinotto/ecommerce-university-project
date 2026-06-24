@@ -39,7 +39,7 @@ function ForgotPasswordPage() {
         ) : (
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
-              <label htmlFor="mail">Correo electrónico</label>
+              <label htmlFor="mail">Correo electrónico <span className="campo-requerido">*</span></label>
               <input
                 id="mail"
                 type="email"

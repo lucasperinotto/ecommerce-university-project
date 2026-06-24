@@ -296,10 +296,6 @@
   padding: 20px 0;
 }
 
-.campo-requerido {
-  color: var(--rojo);
-}
-
 .checkout-nota-requerido {
   font-size: 0.82rem;
   color: var(--gris-medio);

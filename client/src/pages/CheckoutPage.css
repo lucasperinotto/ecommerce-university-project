@@ -316,10 +316,6 @@
   color: var(--gris-oscuro);
 }
 
-.campo-requerido {
-  color: var(--rojo);
-}
-
 .checkout-nota-requerido {
   font-size: 0.82rem;
   color: var(--gris-medio);

@@ -4,6 +4,7 @@ import Spinner from '../../components/Spinner';
 import ModalConfirm from '../../components/ModalConfirm';
 import { useToast } from '../../context/ToastContext';
 import useTitulo from '../../hooks/useTitulo';
+import { soloLetras } from '../../utils/inputFilters';
 import './AdminPage.css';
 
 const FORM_VACIO = { nombre: '', apellido: '' };
@@ -41,7 +42,7 @@ function AdminUsersPage() {
 
   useEffect(() => { fetchUsuarios(); }, []);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: soloLetras(e.target.value) });
 
   const abrirEditar = (usuario) => {
     setForm({ nombre: usuario.nombre, apellido: usuario.apellido });
@@ -133,25 +134,25 @@ function AdminUsersPage() {
           <form onSubmit={handleCrearNuevo} className="admin-form">
             <div className="form-row">
               <div className="form-group">
-                <label>Nombre</label>
-                <input name="nombre" value={formNuevo.nombre} onChange={(e) => setFormNuevo({ ...formNuevo, nombre: e.target.value })} required />
+                <label>Nombre <span className="campo-requerido">*</span></label>
+                <input name="nombre" value={formNuevo.nombre} onChange={(e) => setFormNuevo({ ...formNuevo, nombre: soloLetras(e.target.value) })} required />
               </div>
               <div className="form-group">
-                <label>Apellido</label>
-                <input name="apellido" value={formNuevo.apellido} onChange={(e) => setFormNuevo({ ...formNuevo, apellido: e.target.value })} required />
+                <label>Apellido <span className="campo-requerido">*</span></label>
+                <input name="apellido" value={formNuevo.apellido} onChange={(e) => setFormNuevo({ ...formNuevo, apellido: soloLetras(e.target.value) })} required />
               </div>
             </div>
             <div className="form-group">
-              <label>Correo electrónico</label>
+              <label>Correo electrónico <span className="campo-requerido">*</span></label>
               <input type="email" name="mail" value={formNuevo.mail} onChange={(e) => setFormNuevo({ ...formNuevo, mail: e.target.value })} required />
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Contraseña</label>
+                <label>Contraseña <span className="campo-requerido">*</span></label>
                 <input type="password" name="contrasena" value={formNuevo.contrasena} onChange={(e) => setFormNuevo({ ...formNuevo, contrasena: e.target.value })} required minLength={6} />
               </div>
               <div className="form-group">
-                <label>Confirmar contraseña</label>
+                <label>Confirmar contraseña <span className="campo-requerido">*</span></label>
                 <input type="password" name="confirmar" value={formNuevo.confirmar} onChange={(e) => setFormNuevo({ ...formNuevo, confirmar: e.target.value })} required />
               </div>
             </div>
@@ -227,11 +228,11 @@ function AdminUsersPage() {
                       <form onSubmit={handleSubmit} className="admin-inline-form">
                         <div className="form-row">
                           <div className="form-group">
-                            <label>Nombre</label>
+                            <label>Nombre <span className="campo-requerido">*</span></label>
                             <input name="nombre" value={form.nombre} onChange={handleChange} required />
                           </div>
                           <div className="form-group">
-                            <label>Apellido</label>
+                            <label>Apellido <span className="campo-requerido">*</span></label>
                             <input name="apellido" value={form.apellido} onChange={handleChange} required />
                           </div>
                         </div>

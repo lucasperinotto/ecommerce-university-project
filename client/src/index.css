@@ -14,7 +14,7 @@
   --gris-medio: #7A7A7A;
   --gris-claro: #E8E4DC;
   --verde-palido: #EDF4ED;
-  --rojo: var(--rojo);
+  --rojo: #C0392B;
   --rojo-claro: #fde8e8;
   --naranja: #f57f17;
 }
@@ -144,6 +144,10 @@ button {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+}
+
+.campo-requerido {
+  color: var(--rojo);
 }
 
 .auth-error {

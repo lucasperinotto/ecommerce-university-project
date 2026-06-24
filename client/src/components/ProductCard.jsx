@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import './ProductCard.css';
 
 function ProductCard({ producto }) {
   const { agregarItem } = useCarrito();
   const { showToast } = useToast();
-  const { nombre, precio, categoria, estado, imagen } = producto;
-  const noDisponible = estado === 'inactivo';
+  const { usuario } = useAuth();
+  const { nombre, precio, categoria, estado, imagen, cantidad } = producto;
+  const noDisponible = estado === 'inactivo' || cantidad === 0;
 
   const getObjectPosition = () => {
     if (categoria === 'anillos') return 'center 70%';
@@ -36,7 +38,7 @@ function ProductCard({ producto }) {
               <span>{categoria || 'Accesorio'}</span>
             </div>
           )}
-          {noDisponible && <span className="product-card-badge">Agotado</span>}
+          {noDisponible && <span className="product-card-badge">Sin stock</span>}
         </div>
         <div className="product-card-info">
           {categoria && <p className="product-card-categoria">{categoria}</p>}
@@ -44,15 +46,17 @@ function ProductCard({ producto }) {
           <p className="product-card-precio">${Number(precio).toLocaleString('es-AR')}</p>
         </div>
       </Link>
-      <div className="product-card-actions">
-        <button
-          className="product-card-btn"
-          onClick={handleAgregar}
-          disabled={noDisponible}
-        >
-          {noDisponible ? 'Agotado' : 'Agregar al carrito'}
-        </button>
-      </div>
+      {usuario?.rol !== 'admin' && (
+        <div className="product-card-actions">
+          <button
+            className="product-card-btn"
+            onClick={handleAgregar}
+            disabled={noDisponible}
+          >
+            {noDisponible ? 'Sin stock' : 'Agregar al carrito'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

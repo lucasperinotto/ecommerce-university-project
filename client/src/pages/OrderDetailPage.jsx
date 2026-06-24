@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import useTitulo from '../hooks/useTitulo';
+import { labelEstado, labelMetodoPago } from '../utils/ordenLabels';
 import './OrderDetailPage.css';
 
 function OrderDetailPage() {
@@ -26,7 +27,7 @@ function OrderDetailPage() {
           Orden <span>#{_id?.slice(-8)}</span>
         </h1>
         <span className={`orden-estado orden-estado--${estado?.replace(/ /g, '-')}`}>
-          {estado}
+          {labelEstado(estado)}
         </span>
       </div>
 
@@ -66,7 +67,7 @@ function OrderDetailPage() {
           </div>
           <div className="orden-detalle-seccion">
             <h2>Método de pago</h2>
-            <p>{metodoPago}</p>
+            <p>{labelMetodoPago(metodoPago)}</p>
           </div>
           <div className="orden-detalle-seccion">
             <h2>Fecha</h2>

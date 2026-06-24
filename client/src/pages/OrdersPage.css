@@ -4,6 +4,21 @@
   padding: 48px 24px;
 }
 
+.ordenes-volver {
+  display: inline-block;
+  background: none;
+  border: none;
+  color: var(--gris-medio);
+  font-size: 0.88rem;
+  margin-bottom: 28px;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.ordenes-volver:hover {
+  color: var(--gris-oscuro);
+}
+
 .ordenes-titulo {
   font-size: 1.8rem;
   font-weight: normal;

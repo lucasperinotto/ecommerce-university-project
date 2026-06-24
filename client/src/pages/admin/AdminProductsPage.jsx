@@ -149,7 +149,7 @@ function AdminProductsPage() {
           <form onSubmit={handleSubmit} className="admin-form">
             <div className="form-row">
               <div className="form-group">
-                <label>Nombre</label>
+                <label>Nombre <span className="campo-requerido">*</span></label>
                 <input name="nombre" value={form.nombre} onChange={handleChange} required />
               </div>
               <div className="form-group">
@@ -162,7 +162,7 @@ function AdminProductsPage() {
               </div>
             </div>
             <div className="form-group">
-              <label>Descripción</label>
+              <label>Descripción <span className="campo-requerido">*</span></label>
               <textarea
                 name="descripcion"
                 value={form.descripcion}
@@ -173,7 +173,7 @@ function AdminProductsPage() {
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Precio ($)</label>
+                <label>Precio ($) <span className="campo-requerido">*</span></label>
                 <input
                   name="precio"
                   type="number"
@@ -184,7 +184,7 @@ function AdminProductsPage() {
                 />
               </div>
               <div className="form-group">
-                <label>Stock</label>
+                <label>Stock <span className="campo-requerido">*</span></label>
                 <input
                   name="cantidad"
                   type="number"
@@ -196,8 +196,8 @@ function AdminProductsPage() {
               </div>
             </div>
             <div className="form-group">
-              <label>URL de imagen</label>
-              <input name="imagen" value={form.imagen} onChange={handleChange} />
+              <label>URL de imagen <span className="campo-requerido">*</span></label>
+              <input name="imagen" value={form.imagen} onChange={handleChange} required />
             </div>
             {formError && <p className="auth-error">{formError}</p>}
             <div className="admin-form-acciones">

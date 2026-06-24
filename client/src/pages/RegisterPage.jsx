@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import useTitulo from '../hooks/useTitulo';
+import { soloLetras } from '../utils/inputFilters';
 
 function RegisterPage() {
   useTitulo('Crear cuenta');
@@ -21,7 +22,12 @@ function RegisterPage() {
   const [verContrasena, setVerContrasena] = useState(false);
   const [verConfirmar, setVerConfirmar] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name } = e.target;
+    let { value } = e.target;
+    if (name === 'nombre' || name === 'apellido') value = soloLetras(value);
+    setForm({ ...form, [name]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +51,7 @@ function RegisterPage() {
         <h1 className="auth-titulo">Crear cuenta</h1>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="nombre">Nombre</label>
+            <label htmlFor="nombre">Nombre <span className="campo-requerido">*</span></label>
             <input
               id="nombre"
               type="text"
@@ -56,7 +62,7 @@ function RegisterPage() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="apellido">Apellido</label>
+            <label htmlFor="apellido">Apellido <span className="campo-requerido">*</span></label>
             <input
               id="apellido"
               type="text"
@@ -67,7 +73,7 @@ function RegisterPage() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="mail">Correo electrónico</label>
+            <label htmlFor="mail">Correo electrónico <span className="campo-requerido">*</span></label>
             <input
               id="mail"
               type="email"
@@ -79,7 +85,7 @@ function RegisterPage() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="contrasena">Contraseña</label>
+            <label htmlFor="contrasena">Contraseña <span className="campo-requerido">*</span></label>
             <div className="input-password-wrap">
               <input
                 id="contrasena"
@@ -113,7 +119,7 @@ function RegisterPage() {
             </div>
           </div>
           <div className="form-group">
-            <label htmlFor="confirmar">Confirmar contraseña</label>
+            <label htmlFor="confirmar">Confirmar contraseña <span className="campo-requerido">*</span></label>
             <div className="input-password-wrap">
               <input
                 id="confirmar"

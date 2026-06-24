@@ -1,3 +1,5 @@
+import './ModalConfirm.css';
+
 function ModalConfirm({ mensaje, onConfirmar, onCancelar }) {
   return (
     <div className="modal-overlay" onClick={onCancelar}>
