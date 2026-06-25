@@ -40,7 +40,8 @@ const generarOrden = async (req, res) => {
     }
 
     if (tipoEntrega === 'envio') {
-        if (!direccionEnvio || !direccionEnvio.calle || !direccionEnvio.numero || !direccionEnvio.ciudad || !direccionEnvio.provincia || !direccionEnvio.codigoPostal) {
+        if (!direccionEnvio || !direccionEnvio.calle || !direccionEnvio.numero ||
+            !direccionEnvio.ciudad || !direccionEnvio.provincia || !direccionEnvio.codigoPostal) {
             return res.status(400).json({ error: 'Todos los campos de dirección de envío son obligatorios.' });
         }
     }
@@ -64,7 +65,8 @@ const generarOrden = async (req, res) => {
             return res.status(400).json({ error: `El producto "${item.nombre}" ya no está disponible.` });
         }
         if (producto.cantidad < item.cantidad) {
-            return res.status(400).json({ error: `No hay suficiente stock de "${item.nombre}". Disponible: ${producto.cantidad}.` });
+            return res.status(400).json({ error: `No hay suficiente stock de "${item.nombre}". 
+                                                    Disponible: ${producto.cantidad}.` });
         }
     }
 

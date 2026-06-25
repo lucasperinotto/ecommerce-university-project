@@ -6,8 +6,8 @@ const { isOwnerOrAdmin } = require('../middlewares/auth.middleware');
 // Endpoint "Obtener todos los Usuarios"
 const obtenerUsuarios = async (req, res) => {
     try {
-        const usuarios = await Usuario.find().select("-__v");
-        res.json(usuarios);
+        const usuarios = await Usuario.find().select("-__v -contrasena");
+        res.status(200).json(usuarios);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener los usuarios.' });
     }
@@ -19,11 +19,12 @@ const obtenerUsuarioPorId = async (req, res) => {
         return res.status(403).json({ error: 'No autorizado.' });
     }
     try {
-        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        const usuario = await Usuario.findById(req.params.id).select("-__v -contrasena");
         if (!usuario) {
             return res.status(404).json({ error: 'Usuario no encontrado.'});
         }
-        res.json(usuario);
+
+        res.status(200).json(usuario);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener el usuario.' });
     }
@@ -83,7 +84,7 @@ const actualizarUsuario = async (req, res) => {
         return res.status(403).json({ error: 'No autorizado.' });
     }
     try {
-        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        const usuario = await Usuario.findById(req.params.id).select("-__v -contrasena");
         if (!usuario) {
             return res.status(404).json({ error: 'Usuario no encontrado.'});
         }
@@ -97,7 +98,7 @@ const actualizarUsuario = async (req, res) => {
         usuario.apellido = apellido;
 
         await usuario.save();
-        res.json(usuario);
+        res.status(200).json(usuario);
         } catch (error) {
         res.status(500).json({ error: 'Error al actualizar el usuario.' });
     }
@@ -109,14 +110,14 @@ const agregarDireccion = async (req, res) => {
         return res.status(403).json({ error: 'No autorizado.' });
     }
     try {
-        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        const usuario = await Usuario.findById(req.params.id).select("-__v -contrasena");
         if (!usuario) {
             return res.status(404).json({ error: 'Usuario no encontrado.' });
         }
 
         usuario.direcciones = req.body.direcciones || [];
         await usuario.save();
-        res.json(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar domicilios.' });
     }
@@ -125,14 +126,14 @@ const agregarDireccion = async (req, res) => {
 // Endpoint "Baja Logica de Usuario"
 const bajaLogicaUsuario = async (req, res) => {
     try {
-        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        const usuario = await Usuario.findById(req.params.id).select("-__v -contrasena");
         if (!usuario) {
             return res.status(404).json({ error: 'Usuario no encontrado.'});
         }
 
         usuario.estado = "inactivo";
         await usuario.save();
-        res.json(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
         res.status(500).json({ error: 'Error al dar de baja al usuario.' });
     }
@@ -141,14 +142,14 @@ const bajaLogicaUsuario = async (req, res) => {
 // Endpoint "Restaurar Usuario"
 const restaurarUsuario = async (req, res) => {
     try {
-        const usuario = await Usuario.findById(req.params.id).select("-__v");
+        const usuario = await Usuario.findById(req.params.id).select("-__v -contrasena");
         if (!usuario) {
             return res.status(404).json({ error: 'Usuario no encontrado.'});
         }
 
         usuario.estado = "activo";
         await usuario.save();
-        res.json(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
         res.status(500).json({ error: 'Error al restaurar el usuario.' });
     }
